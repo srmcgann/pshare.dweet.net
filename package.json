@@ -4,11 +4,15 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "./prebuild.sh; vue-cli-service build; ./genlink.sh; ./push.sh"
   },
   "dependencies": {
     "core-js": "^3.8.3",
-    "vue": "^3.2.13"
+    "fs": "^0.0.1-security",
+    "html-webpack-plugin": "^5.5.0",
+    "path": "^0.12.7",
+    "vue": "^3.2.13",
+    "vue-loader": "^17.0.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~5.0.0",
