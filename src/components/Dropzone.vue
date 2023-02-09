@@ -15,14 +15,13 @@
     <div class="caption" v-html="caption"></div>
     <div v-if="!showProgress && !finished">
       <p>Drag one or more files to this <i>drop zone</i>.</p>
-      <div v-for="file in filteredFiles">
-        
+      <div class="fileContainer" v-for="file in filteredFiles">
         <File :state="state" :file="file" />
       </div>
     </div>
     <div v-else>
       <div v-if="finished">
-        <div v-for="file in state.loggedinUserFiles">
+        <div class="fileContainer" v-for="file in state.loggedinUserFiles">
           <File :state="state" :file="file" />
         </div>
       </div>
@@ -37,9 +36,9 @@
       </div>
     </div>
     <div v-if="0" v-for="i in 10">
-          <div class="progressBar" :key="'outer_'+idx">
-            <div :style="`width:calc(${i*10}%)`" class="innerProgress" :key="'inner_'+idx"></div>
-          </div>
+      <div class="progressBar" :key="'outer_'+idx">
+        <div :style="`width:calc(${i*10}%)`" class="innerProgress" :key="'inner_'+idx"></div>
+      </div>
       {{JSON.stringify(this.fileList)}}
     </div>
   </div>
@@ -68,11 +67,12 @@ export default {
   computed:{
     filteredFiles(){
       let rw = 100
-      let cl = 4
-      let sp = 100
+      let cl = 5
+      let hsp = 120
+      let vsp = 100
       return this.state.loggedinUserFiles.map((v,i)=>{
-        v.X = 20 + (i%cl)*sp
-        v.Y = 175 + ((i/cl|0)%rw)*sp
+        v.X = 20 + (i%cl)*hsp
+        v.Y = 175 + ((i/cl|0)%rw)*vsp
         return v
       })
     }
@@ -261,11 +261,18 @@ export default {
     display: inline-block;
     margin: 0;
     width: 100%;
-    height: 50vw;
+    height: calc(100vh - 113px);
     border: 1px solid #4f84;
     vertical-align: top;
     overflow-x: hidden;
     overflow-y: auto;
+  }
+  .fileContainer{
+    align-content: flex-start;
+    display: inline-flex;
+    flex-wrap: wrap;
+    flex-flow: column wrap;
+    justify-content: space-evenly;
   }
   .caption{
     font-size: 1.3em;

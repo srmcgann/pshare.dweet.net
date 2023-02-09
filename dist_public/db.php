@@ -5,6 +5,7 @@
   $db="pshare";
 
   $baseAssetsURL = 'https://assets.dweet.net/misc';
+  $assetsDir = '/var/www/html/whitehot_assets/misc';
   
   $link = mysqli_connect($db_host, $db_user, $db_pass, $db);
 

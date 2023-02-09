@@ -1,11 +1,11 @@
 <?
   require('db.php');
 
-  //$user = mysql_real_escape_string($link, $_POST['user']);
-  //$passhash = mysql_real_escape_string($_POST['passhash']);
+  $user = mysqli_real_escape_string($link, $_POST['user']);
+  $passhash = mysqli_real_escape_string($link, $_POST['passhash']);
 
-  $user = 'cantelope';
-  $passhash = '$2y$10$Rmne0vHey.ywn7QU/WqUGun9SXUZR6RHjssez4.dvJdAF2ZsB6SA2';
+  //$user = 'cantelope';
+  //$passhash = '$2y$10$Rmne0vHey.ywn7QU/WqUGun9SXUZR6RHjssez4.dvJdAF2ZsB6SA2';
 
   if($user && $passhash){
     $sql = 'SELECT * FROM users WHERE (name LIKE "'.$user.'" OR email LIKE "'.$user.'") AND passhash = "'.$passhash.'"';
@@ -20,10 +20,11 @@ $targetDir = '/var/www/html/whitehotrobot_assets/misc/';
 $tmpFilePath = $_FILES['file']['tmp_name'];
 $success = false;
 if ($tmpFilePath != ""){
+  $type = mime_content_type($tmpFilePath);
   $filename = strtoupper($_FILES['file']['name']);
   $suffix = '.' . substr($filename, strlen($filename)-3);
   if(1){//$suffix == '.MP3' || $suffix == '.WAV' || $suffix == '.OGG'){
-    $newFileName = ($hash = hash_file('md5', $tmpFilePath)) . $suffix;
+    $newFileName = ($hash = hash_file('md5', $tmpFilePath));// . $suffix;
     $newFilePath = $targetDir . $newFileName;
     $location = mysqli_real_escape_string($link, $_POST['location']);
     $userID = mysqli_real_escape_string($link, $_POST['userID']);
@@ -45,7 +46,7 @@ if ($tmpFilePath != ""){
       $description = mysqli_real_escape_string($link, $_POST['description']);
       $audioFile = $baseAssetsURL . '/misc/' . $newFileName;
       if(!$location) $location = '/';
-      $sql = 'INSERT INTO files (name, userID, description, views, private, hash, location) VALUES("'.$name.'",'.$userID.',"'.$description.'", 0, 1, "'.$hash.'", "'.$location.'")';
+      $sql = 'INSERT INTO files (name, type, userID, description, views, private, hash, location) VALUES("'.$name.'", "'.$type.'", '.$userID.',"'.$description.'", 0, 1, "'.$hash.'", "'.$location.'")';
       mysqli_query($link, $sql);
       $success = true;
     }

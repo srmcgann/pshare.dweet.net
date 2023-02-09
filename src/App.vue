@@ -32,7 +32,8 @@ export default {
         baseURL: 'https://pshare.dweet.net',
         rootDomain: 'pshare.dweet.net',
         loggedin: false,
-        assetsURL: 'https://assets.dweet.net',
+        assetsURL: 'https://assets.dweet.net/misc',
+        fileViewerURL: 'https://pshare.dweet.net/viewer',
         admin: false,
         loggedinUserAvatar: '',
         loggedinUserEmail: '',
@@ -43,6 +44,7 @@ export default {
         setting: null,
         dropTarget: '/',
         fetchObj: null,
+        getSuffix: null,
         showModal: null,
         closeModals: null,
         login: null,
@@ -70,6 +72,8 @@ export default {
       this.state.loggedinUserFiles = []
       this.state.loggedin = false
       window.location.reload()
+    },
+    getSuffix(file){
     },
     setCookie(){
       let cookies = document.cookie
@@ -204,6 +208,7 @@ export default {
     this.state.register = this.register
     this.state.settings = this.settings
     this.state.fetchObj = this.fetchObj
+    this.state.getSuffix = this.getSuffix
     this.state.setCookie = this.setCookie
     this.state.showModals = this.showModals
     this.state.closeModals = this.closeModals
@@ -219,6 +224,8 @@ html, body{
   font-family: courier;
   font-size: 16px;
   min-height: 100vh;
+  width: 100vw;
+  overflow: hidden;
   margin: 0;
   line-height: 1.1em;
 }
@@ -266,6 +273,6 @@ html, body{
 
 }
 .App{
-  width: calc(100vw - 100px);
+  width: 100vw;
 }
 </style>
