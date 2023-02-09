@@ -1,12 +1,12 @@
 <template>
-  <div class="fileDiv">
+  <div class="fileDiv" ref="fileDiv">
     <div
       @click="load()"
       class="file"
-      :ref="this.file.id"
-      :title="`open ${file.name}`"
+      :ref="file.id"
+      :title="`open ${file.name}\nin a new browser tab`"
     >
-      {{file.name}}
+    <div class="fileName" v-html="file.name" :ref="'name_'+file.hash"></div>
     </div>
     <button @click="downloadFile()" :title="'download file'" class="downloadButton"></button>
     <button @click="deleteFile()" :title="'delete file'" class="deleteButton"></button>
@@ -35,7 +35,7 @@ export default {
       a.target = "_blank"
       document.body.appendChild(a)
       a.click()
-      document.body.remove(a)
+      a.remove()
       
     },
     deleteFile(){
@@ -47,13 +47,23 @@ export default {
         }
         fetch(this.state.baseURL + '/deleteFile.php', this.state.fetchObj(sendData))
         .then(json=>json.json()).then(data=>{
-          console.log(data)
+          if(data[0]){
+            console.log('file deleted')
+            this.state.loggedinUserFiles = this.state.loggedinUserFiles.filter(v=>{
+              return v.id != this.file.id
+            })
+          }
         })
       }
     }
   },
   mounted(){
-    let fileElement = this.$refs[this.file.id]
+    let thumbEl = this.$refs.fileDiv
+    thumbEl.style.backgroundSize = 'cover'
+    thumbEl.style.repeat = 'no-repeat'
+    thumbEl.style.position = 'center center'
+    thumbEl.style.backgroundImage = `url(${this.state.assetsURL + '/' + this.file.hash})`
+    let fileElement = this.$refs['name_'+this.file.hash]
     //fileElement.style.left = this.file.X + 'px'
     //fileElement.style.top = this.file.Y + 'px'
     fileElement.onmouseover = () => {
@@ -62,7 +72,7 @@ export default {
       fileElement.style.cursor = 'pointer'
     }
     fileElement.onmouseleave = () => {
-      fileElement.style.background = '#0000'
+      fileElement.style.background = '#033'
       fileElement.style.color = '#fff'
       fileElement.style.cursor = 'default'
     }
@@ -83,11 +93,29 @@ export default {
     position: absolute;
     vertical-align: top;
     border-radius: 5px;
-    background-color: #400;
+    background-color: #200;
     background-position: center center;
-    background-size: 20px 20px;
+    background-size: 16px 16px;
     background-repeat: no-repeat;
     background-image: url(https://jsbot.cantelope.org/uploads/XeGsK.png);
+  }
+  .fileName{
+    background: #033;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 10px;
+    word-break: space;
+    max-width: 150px;
+    padding-left: 10px;
+    padding-right: 10px;
+    line-height: 1;
+  }
+  .thumb{
+    width: 100%;
+    height: 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
   .downloadButton{
     width: 20px;
@@ -102,28 +130,27 @@ export default {
     border-radius: 5px;
     background-color: #086;
     background-position: center center;
-    background-size: 20px 20px;
+    background-size: 15px 15px;
     background-repeat: no-repeat;
-    background-image: url(http://jsbot.cantelope.org/uploads/2c0FSr.png);
+    background-image: url(https://jsbot.cantelope.org/uploads/2c0FSr.png);
   }
   .fileDiv{
-    padding: 2px;
+    padding: 0px;
     padding-top:20px;
     background: #000;
-    margin: 3px;
+    margin: 10px;
     border-radius: 5px;
   }
   .file{
-    padding: 5px;
+    padding: 0px;
     padding-top: 0px;
     display: inline-block;
     margin: 5px;
+    min-width:70px;
     vertical-align: top;
     align-self: flex-start;
     display: inline-block;
-    word-break: break-all;
-    font-size: 8px;
+    font-size: 10px;
     color: #fff;
-    border: 1px solid #4f84;
   }
 </style>

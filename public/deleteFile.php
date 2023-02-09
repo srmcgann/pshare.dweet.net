@@ -23,6 +23,5 @@
       $success = true;
     }
   }
-  echo json_encode($success);
-}
+  echo json_encode([$success]);
 ?>

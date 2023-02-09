@@ -24,7 +24,7 @@ if ($tmpFilePath != ""){
   $filename = strtoupper($_FILES['file']['name']);
   $suffix = '.' . substr($filename, strlen($filename)-3);
   if(1){//$suffix == '.MP3' || $suffix == '.WAV' || $suffix == '.OGG'){
-    $newFileName = ($hash = hash_file('md5', $tmpFilePath));// . $suffix;
+    $newFileName = ($hash = md5($_FILES['file']['name'] . hash_file('md5', $tmpFilePath)));// . $suffix;
     $newFilePath = $targetDir . $newFileName;
     $location = mysqli_real_escape_string($link, $_POST['location']);
     $userID = mysqli_real_escape_string($link, $_POST['userID']);

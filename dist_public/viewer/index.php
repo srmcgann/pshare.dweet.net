@@ -35,4 +35,3 @@
   }
   //echo json_encode([$found, $suffix, $type]);
 ?>
-
