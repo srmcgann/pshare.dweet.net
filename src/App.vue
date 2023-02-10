@@ -40,6 +40,7 @@ export default {
         loggedinUserName: '',
         loggedinUserID: '',
         loggedinUserFiles: [],
+        loggedinUserLocation: '',
         loggedinUserHash: '',
         setting: null,
         dropTarget: '/',
@@ -111,7 +112,6 @@ export default {
       }
       fetch(this.state.baseURL + '/loadUserData.php', this.state.fetchObj(sendData))
       .then(json=>json.json()).then(data=>{
-        console.log(data)
         if(data[0]){
           this.state.loggedinUserFiles = [] //data[1]
           this.$nextTick(()=>{
@@ -189,6 +189,7 @@ export default {
             this.state.loggedinUserID = data[1].id
             this.state.loggedinUserAvatar = data[1].avatar
             this.state.loggedinUserName = data[1].name
+            this.state.loggedinUserLocation = data[1].currentLocation
             this.state.loggedinUserEmail = data[1].email
             this.state.admin = !!(+data[1].admin)
             this.state.setCookie()

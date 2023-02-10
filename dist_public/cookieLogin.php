@@ -12,12 +12,13 @@
      $row = mysqli_fetch_assoc($res);
      $success = true;
      $user = [
-       'name'     => $row['name'],
-       'email'    => $row['email'],
-       'passhash' => $row['passhash'],
-       'id'       => $row['id'],
-       'avatar'   => $row['avatar'],
-       'admin'    => $row['admin']
+       'name'            => $row['name'],
+       'email'           => $row['email'],
+       'passhash'        => $row['passhash'],
+       'currentLocation' => $row['currentLocation'],
+       'id'              => $row['id'],
+       'avatar'          => $row['avatar'],
+       'admin'           => $row['admin']
      ];
    } else {
      $error = "user not found!";

@@ -1,7 +1,9 @@
 <template>
   <div class="header">
-    <div v-if="state.loggedin" v-html="'welcome, ' + state.loggedinUserName">
-    </div>
+    <div
+      v-if="state.loggedin"
+      v-html="headerText()"
+    ></div>
     <HeaderTools :state="state"/>
   </div>
 </template>
@@ -17,7 +19,16 @@ export default {
   props: ['state'],
   data(){
     return {
-      testData : "it works!"
+    }
+  },
+  methods:{
+    headerText(){
+      if(this.state.loggedin){
+        return 'welcome, ' + this.state.loggedinUserName +
+        `<br>current directory: ${this.state.loggedinUserLocation}`
+      } else {
+        return 'pshare'
+      }
     }
   }
 }

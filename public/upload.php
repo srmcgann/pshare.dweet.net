@@ -16,7 +16,6 @@
   }
 
 putenv('TMPDIR=/tmp');
-$targetDir = '/var/www/html/whitehotrobot_assets/misc/';
 $tmpFilePath = $_FILES['file']['tmp_name'];
 $success = false;
 if ($tmpFilePath != ""){
@@ -25,7 +24,7 @@ if ($tmpFilePath != ""){
   $suffix = '.' . substr($filename, strlen($filename)-3);
   if(1){//$suffix == '.MP3' || $suffix == '.WAV' || $suffix == '.OGG'){
     $newFileName = ($hash = md5($_FILES['file']['name'] . hash_file('md5', $tmpFilePath)));// . $suffix;
-    $newFilePath = $targetDir . $newFileName;
+    $newFilePath = $assetsDir . $newFileName;
     $location = mysqli_real_escape_string($link, $_POST['location']);
     $userID = mysqli_real_escape_string($link, $_POST['userID']);
     $collision = false;
@@ -44,9 +43,8 @@ if ($tmpFilePath != ""){
       chmod($newFilePath, 0755);
       $name = mysqli_real_escape_string($link, $_POST['name']);
       $description = mysqli_real_escape_string($link, $_POST['description']);
-      $audioFile = $baseAssetsURL . '/misc/' . $newFileName;
       if(!$location) $location = '/';
-      $sql = 'INSERT INTO files (name, type, userID, description, views, private, hash, location) VALUES("'.$name.'", "'.$type.'", '.$userID.',"'.$description.'", 0, 1, "'.$hash.'", "'.$location.'")';
+      $sql = 'INSERT INTO files (name, type, userID, description, views, private, folder, hash, location) VALUES("'.$name.'", "'.$type.'", '.$userID.',"'.$description.'", 0, 1, 0, "'.$hash.'", "'.$location.'")';
       mysqli_query($link, $sql);
       $success = true;
     }

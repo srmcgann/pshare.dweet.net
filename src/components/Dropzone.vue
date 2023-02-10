@@ -14,14 +14,15 @@
   >
     <div class="caption" v-html="caption"></div>
     <div v-if="!showProgress && !finished">
-      <p>Drag one or more files to this <i>drop zone</i>.</p>
-      <div class="fileContainer" v-for="file in filteredFiles">
+      <span class="desc">Drag one or more files to this <i>drop zone</i>.</span>
+      <DZTools :state="state"/>
+      <div class="fileContainer" v-for="file in state.loggedinUserFiles" >
         <File :state="state" :file="file" />
       </div>
     </div>
     <div v-else>
       <div v-if="finished">
-        <div class="fileContainer" v-for="file in state.loggedinUserFiles">
+        <div v-for="file in state.loggedinUserFiles" class="fileContainer">
           <File :state="state" :file="file" />
         </div>
       </div>
@@ -46,11 +47,12 @@
 
 <script>
 import File from './File'
-
+import DZTools from './DZTools'
 export default {
   name: 'Dropzone',
   components: {
-    File
+    File,
+    DZTools
   },
   props: ['state', 'caption'],
   data(){
@@ -256,25 +258,30 @@ export default {
 <style scoped>
   .dropzone{
     padding: 20px;
+    padding-top: 5px;
     color: #fff;
     background: #333;
     display: inline-block;
     margin: 0;
-    width: 100%;
-    height: calc(100vh - 113px);
+    width: calc(100vw - 40px);
+    position: absolute;
+    top: 71px;
+    height: calc(100vh - 98px);
     border: 1px solid #4f84;
     vertical-align: top;
     overflow-x: hidden;
     overflow-y: auto;
   }
   .fileContainer{
+    top: 100px;
     align-content: flex-start;
     display: inline-flex;
     flex-wrap: wrap;
     flex-flow: column wrap;
-    justify-content: space-evenly;
+    justify-content: space-around;
   }
   .caption{
+    top: 5px;
     font-size: 1.3em;
     color: #afa;
   }
@@ -300,5 +307,11 @@ export default {
   }
   .dragOver{
     background: #0ff1!important;
+  }
+  .desc{
+    position: absolute;
+    top: 0;
+    margin-top: 5px;
+    margin-left: 125px;
   }
 </style>

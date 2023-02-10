@@ -14,12 +14,13 @@
      if(password_verify($password, $passhash)){
        $success = true;
        $user = [
-         'name'     => $row['name'],
-         'email'    => $row['email'],
-         'passhash' => $row['passhash'],
-         'id'       => $row['id'],
-         'avatar'   => $row['avatar'],
-         'admin'    => $row['admin']
+         'name'            => $row['name'],
+         'currentLocation' => $row['currentLocation'],
+         'email'           => $row['email'],
+         'passhash'        => $row['passhash'],
+         'id'              => $row['id'],
+         'avatar'          => $row['avatar'],
+         'admin'           => $row['admin']
        ];
      } else {
        $error = "incorrect password!";

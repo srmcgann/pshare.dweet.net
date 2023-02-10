@@ -58,11 +58,13 @@ export default {
     }
   },
   mounted(){
-    let thumbEl = this.$refs.fileDiv
-    thumbEl.style.backgroundSize = 'cover'
-    thumbEl.style.repeat = 'no-repeat'
-    thumbEl.style.position = 'center center'
-    thumbEl.style.backgroundImage = `url(${this.state.assetsURL + '/' + this.file.hash})`
+    if(this.file.type.indexOf('image')!==-1){
+      let thumbEl = this.$refs.fileDiv
+      thumbEl.style.backgroundSize = 'cover'
+      thumbEl.style.repeat = 'no-repeat'
+      thumbEl.style.position = 'center center'
+      thumbEl.style.backgroundImage = `url(${this.state.assetsURL + '/' + this.file.hash})`
+    }
     let fileElement = this.$refs['name_'+this.file.hash]
     //fileElement.style.left = this.file.X + 'px'
     //fileElement.style.top = this.file.Y + 'px'
@@ -138,7 +140,9 @@ export default {
     padding: 0px;
     padding-top:20px;
     background: #000;
+    display: inline-block;
     margin: 10px;
+    align-self: flex-start;
     border-radius: 5px;
   }
   .file{
@@ -148,7 +152,6 @@ export default {
     margin: 5px;
     min-width:70px;
     vertical-align: top;
-    align-self: flex-start;
     display: inline-block;
     font-size: 10px;
     color: #fff;

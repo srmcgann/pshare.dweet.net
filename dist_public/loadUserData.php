@@ -13,7 +13,8 @@
       $success = true;
       $row = mysqli_fetch_assoc($res);
       $userID = $row['id'];
-      $sql = "SELECT * FROM files WHERE userID = $userID";
+      $currentLocation = $row['currentLocation'];
+      $sql = "SELECT * FROM files WHERE userID = $userID AND location LIKE \"$currentLocation\"";
       $res2 = mysqli_query($link, $sql);
       if($filecount = mysqli_num_rows($res2)){
         for($i=0; $i<$filecount; ++$i){
