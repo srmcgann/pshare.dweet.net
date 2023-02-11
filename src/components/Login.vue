@@ -44,7 +44,8 @@ export default {
       if(!this.loginPassword || !this.loginUserName) return
       let sendData = {
         user: this.loginUserName,
-        password: this.loginPassword
+        password: this.loginPassword,
+        location: decodeURIComponent(window.location.pathname)
       }
       fetch(this.state.baseURL + '/login.php', this.state.fetchObj(sendData))
       .then(json=>json.json()).then(data=>{

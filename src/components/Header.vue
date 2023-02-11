@@ -24,8 +24,9 @@ export default {
   methods:{
     headerText(){
       if(this.state.loggedin){
-        return 'welcome, ' + this.state.loggedinUserName +
-        `<br>current directory: ${this.state.loggedinUserLocation}`
+        let s = '<button onclick="l=window.location.href.split(\'/\');l.pop();l.pop();l=l.join(\'/\');window.location.href=l+\'/\'" style="min-width:25px" class="button">up</button>'
+        return 'welcome, ' + this.state.loggedinUserName + '<br>' + (this.state.loggedinUserLocation=='/'?'':s) +
+        `current directory: ${this.state.loggedinUserLocation}`
       } else {
         return 'pshare'
       }

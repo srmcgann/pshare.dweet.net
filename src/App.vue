@@ -70,6 +70,7 @@ export default {
       this.state.loggedinUserName = ''
       this.state.loggedinUserID = ''
       this.state.loggedinUserHash = ''
+      this.state.loggedinUserLocation = ''
       this.state.loggedinUserFiles = []
       this.state.loggedin = false
       window.location.reload()
@@ -82,6 +83,7 @@ export default {
         document.cookie = v + '; expires=' + (new Date(0)).toUTCString() + '; path=/; domain=' + this.state.rootDomain
       })
       document.cookie = 'loggedinUser=' + this.state.loggedinUserName + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
+      document.cookie = 'loggedinUserLocation=' + this.state.loggedinUserLocation + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
       document.cookie = 'minimized=' + this.state.minimized + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
       document.cookie = 'loggedinUserID=' + this.state.loggedinUserID + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
       document.cookie = 'loggedinUserHash=' + this.state.loggedinUserHash + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
@@ -116,6 +118,9 @@ export default {
           this.state.loggedinUserFiles = [] //data[1]
           this.$nextTick(()=>{
             this.state.loggedinUserFiles = data[1]
+            let s = window.location.origin+this.state.loggedinUserLocation
+            console.log(s)
+            window.history.pushState(s, null, s)
           })
         }else{
           console.log(data)
@@ -160,6 +165,7 @@ export default {
       let user =''
       let passhash = ''
       let id = ''
+      let location = decodeURIComponent(window.location.pathname)
       parts.map(v=>{
         v = v.trim()
         let pair = v.split('=')
@@ -178,7 +184,8 @@ export default {
       if(user && passhash && id){
         let sendData = {
           user,
-          passhash
+          passhash,
+          location
         }
         fetch(this.state.baseURL + '/cookieLogin.php',  this.state.fetchObj(sendData))
         .then(json=>json.json()).then(data=>{

@@ -1,14 +1,15 @@
 <template>
-  <div class="fileDiv" ref="fileDiv">
+  <div class="fileDiv" :class="{'folderIcon': file.type=='folder'}" ref="fileDiv">
     <div
       @click="load()"
       class="file"
       :ref="file.id"
-      :title="`open ${file.name}\nin a new browser tab`"
+      :title="`open ${file.name}`+(!(+file.folder)?' in a new browser tab':'')"
     >
     <div class="fileName" v-html="file.name" :ref="'name_'+file.hash"></div>
     </div>
-    <button @click="downloadFile()" :title="'download file'" class="downloadButton"></button>
+    <button @click="renameFile()" :title="'rename'" class="renameButton"></button>
+    <button v-if="file.type != 'folder'" @click="downloadFile()" :title="'download file'" class="downloadButton"></button>
     <button @click="deleteFile()" :title="'delete file'" class="deleteButton"></button>
   </div>
 </template>
@@ -24,7 +25,27 @@ export default {
   },
   methods:{
     load(){
-      window.open(this.state.fileViewerURL + '/' + this.file.hash )
+      if(this.file.type != 'folder'){
+        window.open(this.state.fileViewerURL + '/' + this.file.hash )
+      } else {
+        window.location.href+=this.file.name+'/'
+      }
+    },
+    renameFile(){
+      let newName = prompt('enter a new name')
+      if(this.file.name != newName && newName){
+        let sendData = {
+          user: this.state.loggedinUserName,
+          passhash: this.state.loggedinUserHash,
+          fileID: this.file.id,
+          newName
+        }
+        fetch(this.state.baseURL + '/renameFile.php', this.state.fetchObj(sendData))
+        .then(json=>json.json()).then(data=>{
+          console.log(data)
+          if(data[0]) this.file.name = newName
+        }) 
+      }
     },
     downloadFile(){
       let a = document.createElement('a')
@@ -84,6 +105,33 @@ export default {
 </script>
 
 <style scoped>
+  .folderIcon{
+    width: 80px;
+    height: 40px;
+    border: none;
+    background-color: #2000!important;
+    background-position: center center!important;
+    background-size: contain!important;
+    background-repeat: no-repeat!important;
+    background-image: url(https://jsbot.cantelope.org/uploads/2jP7OJ.png)!important;
+  }
+  .renameButton{
+    width: 20px;
+    height: 20px;
+    border: none;
+    margin-top: -18px;
+    margin-left: -50px;
+    cursor: pointer;
+    display: inline-block;
+    position: absolute;
+    vertical-align: top;
+    border-radius: 5px;
+    background-color: #8fca;
+    background-position: center center;
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-image: url(https://jsbot.cantelope.org/uploads/11tQv3.png);
+  }
   .deleteButton{
     width: 20px;
     height: 20px;
@@ -102,10 +150,10 @@ export default {
     background-image: url(https://jsbot.cantelope.org/uploads/XeGsK.png);
   }
   .fileName{
-    background: #033;
+    background: #0008;
     padding: 5px;
     margin: 5px;
-    border-radius: 10px;
+    border-radius: 2px;
     word-break: space;
     max-width: 150px;
     padding-left: 10px;
@@ -124,7 +172,7 @@ export default {
     height: 20px;
     border: none;
     margin-top: -18px;
-    margin-left: -60px;
+    margin-left: -80px;
     cursor: pointer;
     display: inline-block;
     position: absolute;

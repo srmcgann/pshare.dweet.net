@@ -125,7 +125,7 @@ export default {
             data.append('passhash', this.state.loggedinUserHash)
             data.append('name', v.name)
             data.append('userID', this.state.loggedinUserID)
-            data.append('location', this.state.dropTarget)
+            data.append('location', this.state.loggedinUserLocation)
             data.append('description', '')
             data.append('file', v)
             let request = new XMLHttpRequest()
