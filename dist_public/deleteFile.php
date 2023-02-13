@@ -16,6 +16,10 @@
     $res = mysqli_query($link, $sql);
     if(mysqli_num_rows($res)){
       $row = mysqli_fetch_assoc($res);
+      if($row['type'] == 'folder'){
+        $sql = 'DELETE FROM files WHERE location like "'.$row['location'].$row['name'].'%"';
+        mysqli_query($link, $sql);
+      }
       $hash = $row['hash'];
       $sql = 'DELETE FROM files WHERE userID = '.$userID.' AND id = ' . $fileID;    
       mysqli_query($link, $sql);

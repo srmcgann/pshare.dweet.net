@@ -1,4 +1,5 @@
 <template>
+  <Viewer v-if="state.viewerModalVisible" :state="state" :src="this.state.viewerSrc"/>
   <Settings v-if="state.settingsModalVisible" :state="state"/>
   <Register v-if="state.registerModalVisible" :state="state"/>
   <Login v-if="state.loginModalVisible" :state="state"/>
@@ -14,6 +15,7 @@ import Header from './components/Header'
 import Main from './components/Main'
 import Settings from './components/Settings'
 import Login from './components/Login'
+import Viewer from './components/Viewer'
 import Register from './components/Register'
 import Dropzone from './components/Dropzone'
 export default {
@@ -22,6 +24,7 @@ export default {
     Main,
     Dropzone,
     Login,
+    Viewer,
     Settings,
     Register
   },
@@ -41,6 +44,10 @@ export default {
         loggedinUserID: '',
         loggedinUserFiles: [],
         loggedinUserLocation: '',
+        viewerSrc: '',
+        decToAlpha: null,
+        alphaToDec: null,
+        view: null,
         loggedinUserHash: '',
         setting: null,
         dropTarget: '/',
@@ -56,6 +63,7 @@ export default {
         loginModalVisible: false,
         registerModalVisible: false,
         settingsModalVisible: false,
+        viewerModalVisible: false,
         setCookie: null
       }
     }
@@ -75,7 +83,35 @@ export default {
       this.state.loggedin = false
       window.location.reload()
     },
-    getSuffix(file){
+    alphaToDec(val){
+      let pow=0
+      let res=0
+      let cur, mul
+      while(val!=''){
+        cur=val[val.length-1]
+        val=val.substring(0,val.length-1)
+        mul=cur.charCodeAt(0)<58?cur:cur.charCodeAt(0)-(cur.charCodeAt(0)>96?87:29)
+        res+=mul*(62**pow)
+        pow++
+      }
+      return res
+    },
+    decToAlpha(n){
+      let alphabet='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      let ret='', r
+      while(n){
+        ret = alphabet[Math.round((n/62-(r=n/62|0))*62)|0] + ret
+        n=r
+      }
+      return ret == '' ? '0' : ret
+    },
+    getAvatar(id){
+      if(typeof this.state.userInfo[id] == 'undefined' || !this.state.userInfo[id].avatar){
+        return this.state.defaultAvatar
+      } else {
+        this.state.userInfo[id].avatar = this.state.userInfo[id].avatar.replace(' ','')
+        return this.state.userInfo[id].avatar
+      }
     },
     setCookie(){
       let cookies = document.cookie
@@ -117,13 +153,15 @@ export default {
         if(data[0]){
           this.state.loggedinUserFiles = [] //data[1]
           this.$nextTick(()=>{
+            data[1].map(v=>{
+              v.private = !!(+v.private)
+            })
             this.state.loggedinUserFiles = data[1]
-            let s = window.location.origin+this.state.loggedinUserLocation
-            console.log(s)
+            let s = window.location.origin+'/'+this.decToAlpha(this.state.loggedinUserID)+this.state.loggedinUserLocation
             window.history.pushState(s, null, s)
           })
         }else{
-          console.log(data)
+          console.log('loadUserData[App.vue]',data)
           alert('there was an error loading user data. consarnit!')
         }
       })
@@ -143,7 +181,15 @@ export default {
         case 'settings':
           this.state.settingsModalVisible = true
         break
+        case 'viewer':
+          this.state.viewerModalVisible = true
+        break
       }
+    },
+    view(src){
+      this.closeModals
+      this.state.viewerSrc = src
+      this.showModal('viewer')
     },
     settings(){
       this.closeModals()
@@ -153,6 +199,7 @@ export default {
       this.state.loginModalVisible = false
       this.state.registerModalVisible = false
       this.state.settingsModalVisible = false
+      this.state.viewerModalVisible = false
     },
     clearCookie(){
       let cookies = document.cookie
@@ -190,6 +237,7 @@ export default {
         fetch(this.state.baseURL + '/cookieLogin.php',  this.state.fetchObj(sendData))
         .then(json=>json.json()).then(data=>{
           if(data[0]){
+            console.log('cookieLogin.php[App.vue]',data)
             this.state.loggedinUser = data[1]
             this.state.token = data[1].passhash
             this.state.loggedinUserHash = data[1].passhash
@@ -211,6 +259,7 @@ export default {
     }
   },
   mounted(){
+    this.state.view = this.view
     this.state.login = this.login
     this.state.logout = this.logout
     this.state.register = this.register
@@ -218,6 +267,8 @@ export default {
     this.state.fetchObj = this.fetchObj
     this.state.getSuffix = this.getSuffix
     this.state.setCookie = this.setCookie
+    this.state.decToAlpha = this.decToAlpha
+    this.state.alphaToDec = this.alphaToDec
     this.state.showModals = this.showModals
     this.state.closeModals = this.closeModals
     this.state.loadLoggedInUserData = this.loadLoggedInUserData
@@ -260,6 +311,76 @@ html, body{
 .float{
   z-index: 50;
   position: relative;
+}
+/* Customize the label (the checkboxLabel) */
+.checkboxLabel {
+  display: inline-block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: -2px;
+  margin-left: 30px;
+  margin-top: 3px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkboxLabel input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  border: 1px solid #2468;
+  background-color: #123;
+}
+
+/* On mouse-over, add a grey background color */
+.checkboxLabel:hover input ~ .checkmark {
+  background-color: #234;
+}
+
+/* When the checkbox is checked, add a blue background */
+.checkboxLabel input:checked ~ .checkmark {
+  background-color: #086;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkboxLabel input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkboxLabel .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 .button{
   background: #4fc;

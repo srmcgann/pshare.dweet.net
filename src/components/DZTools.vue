@@ -1,5 +1,7 @@
 <template>
   <div class="DZTools">
+    <div class="caption" v-html="caption"></div>
+    <span class="desc">Drag one or more files to this <i>drop zone</i>.</span>
     <span style="float: left;">tools:</span>
     <button
       title="create new folder"
@@ -13,7 +15,7 @@
 
 export default {
   name: 'DZTools',
-  props: ['state'],
+  props: ['state', 'caption'],
   data(){
     return {
       testData : "it works!"
@@ -21,7 +23,7 @@ export default {
   },
   methods:{
     createFolder(){
-      let folderName = prompt('enter the name of the folder:');
+      let folderName = prompt('enter the name of the folder:', 'new folder name');
       if(!folderName) return
       let sendData = {
         user: this.state.loggedinUserName,
@@ -29,10 +31,8 @@ export default {
         currentLocation: this.state.loggedinUserLocation,
         folderName: folderName
       }
-      console.log(sendData)
       fetch(this.state.baseURL + '/createFolder.php', this.state.fetchObj(sendData))
       .then(json=>json.json()).then(data=>{
-        console.log(data)
         if(data[0]){
           this.state.loggedinUserFiles.push(data[2])          
         }else{
@@ -59,7 +59,13 @@ export default {
     width: 100vw;
   }
   .folderButton{
-    background-image: url(http://jsbot.cantelope.org/uploads/2jP7OJ.png);
+    background-image: url(https://jsbot.cantelope.org/uploads/2jP7OJ.png);
+  }
+  .caption{
+    top: 5px;
+    font-size: 1.3em;
+    float: left;
+    color: #afa;
   }
   .DZToolsButton{
     background-color: #4fc6;

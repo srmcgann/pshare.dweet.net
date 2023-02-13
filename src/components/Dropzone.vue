@@ -12,10 +12,8 @@
     @dragleave="dragLeaveHandler"
     @mouseup="mouseupHandler"
   >
-    <div class="caption" v-html="caption"></div>
+    <DZTools :state="state" :caption="caption"/>
     <div v-if="!showProgress && !finished">
-      <span class="desc">Drag one or more files to this <i>drop zone</i>.</span>
-      <DZTools :state="state"/>
       <div class="fileContainer" v-for="file in state.loggedinUserFiles" >
         <File :state="state" :file="file" />
       </div>
@@ -28,10 +26,10 @@
       </div>
       <div v-else>
         uploading...
-        <div v-if="0" v-for="(file, idx) in fileList" :key="idx">
+        <div v-if="1" v-for="(file, idx) in fileList" :key="idx">
           <span class="fileName" v-html="fileNameFormatted(file.name)"></span>
           <div class="progressBar" :key="'outer_'+idx">
-            <div :style="setWidth(idx)" class="innerProgress" :key="'inner_'+idx"></div>
+            <div :style="`width:calc(${file.perc}%)`" class="innerProgress" :key="'inner_'+idx"></div>
           </div>
         </div>
       </div>
@@ -99,20 +97,18 @@ export default {
         [...e.dataTransfer.items].forEach((item, i) => {
           if (item.kind === 'file') {
             const file = item.getAsFile()
-            console.log(`… file[${i}].name = ${file.name}`)
             this.showProgress = true
             this.draggingOver = false
             this.fileList = [...this.fileList, file]
 
-            files = this.fileList
-            Array.from(files).forEach((v, i)=>{
+            this.fileList.map((v,i)=>{
               v.completed = false
-              this.fileList[i].perc = 0
-              this.fileList[i].idx = i
+              v.perc = 0
+              v.idx = i
             })
           }
         })
-        Array.from(files).forEach((v, i)=>{
+        this.fileList.map((v, i)=>{
           if(error) return
           if(
             //(v.type == 'audio/mpeg' ||
@@ -136,16 +132,13 @@ export default {
               this.fileList[tidx].perc = perc
             })
             request.onreadystatechange = e => {
-              console.log(e)
               if(e.status ==200 && e.readyState == 4){
-                console.log(e.response)
               }
             }
             request.addEventListener('load', e=>{
-              console.log(e)
               v.completed = true
               let finished = true
-              Array.from(files).forEach(q=>{
+              this.fileList.map(q=>{
                 if(!q.completed) finished = false
               })
               if(finished) {
@@ -187,8 +180,11 @@ export default {
               v.size < 100000000
             ){
               let data = new FormData()
+              data.append('user', this.state.loggedinUserName)
+              data.append('passhash', this.state.loggedinUserHash)
               data.append('name', v.name)
               data.append('userID', this.state.loggedinUserID)
+              data.append('location', this.state.loggedinUserLocation)
               data.append('description', '')
               data.append('file', v)
               let request = new XMLHttpRequest()
@@ -200,7 +196,6 @@ export default {
               })
               request.onreadystatechange = e => {
                 if(e.status ==200 && e.readyState == 4){
-                  console.log(e.response)
                 }
               }
               request.addEventListener('load', e=>{
@@ -279,11 +274,6 @@ export default {
     flex-wrap: wrap;
     flex-flow: column wrap;
     justify-content: space-around;
-  }
-  .caption{
-    top: 5px;
-    font-size: 1.3em;
-    color: #afa;
   }
   .fileUploading{
     background: #4f88!important;

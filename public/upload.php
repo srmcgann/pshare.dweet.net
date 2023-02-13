@@ -24,7 +24,7 @@ if ($tmpFilePath != ""){
   $suffix = '.' . substr($filename, strlen($filename)-3);
   if(1){//$suffix == '.MP3' || $suffix == '.WAV' || $suffix == '.OGG'){
     $newFileName = ($hash = md5($_FILES['file']['name'] . hash_file('md5', $tmpFilePath)));// . $suffix;
-    $newFilePath = $assetsDir . $newFileName;
+    $newFilePath = "$assetsDir/$newFileName";
     $location = mysqli_real_escape_string($link, $_POST['location']);
     $userID = mysqli_real_escape_string($link, $_POST['userID']);
     $collision = false;
@@ -49,6 +49,6 @@ if ($tmpFilePath != ""){
       $success = true;
     }
   }
-  return json_encode($success, $collision);
+  echo json_encode([$success, $collision, $tmpFilePath, $newFilePath]);
 }
 ?>

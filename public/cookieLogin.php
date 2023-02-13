@@ -3,8 +3,8 @@
   $data = json_decode(file_get_contents('php://input'));
   $user = mysqli_real_escape_string($link, $data->{"user"}); 
   $passhash = mysqli_real_escape_string($link, $data->{"passhash"});
-  $location = mysqli_real_escape_string($link, $data->{"location"});
   $error = "no (or unknown) error";
+  $location = mysqli_real_escape_string($link, $data->{"location"});
   if($user && $passhash){
     $sql = 'SELECT * FROM users WHERE (name LIKE "'.$user.'" OR email LIKE "'.$user.'") AND passhash = "'.$passhash.'"';
    $res = mysqli_query($link, $sql);
@@ -12,12 +12,29 @@
    if(mysqli_num_rows($res)){
      $row = mysqli_fetch_assoc($res);
      $userID = $row['id'];
+     $lp = explode('/', $location);
+     if(sizeof($lp)){
+       $ar = [];
+       for($i=1;$i<sizeof($lp);++$i){
+         if($lp[$i]) $ar[]=$lp[$i];
+       }
+       if(sizeof($ar)){
+         $location = '/';
+         $lp_ = str_replace('/', '', $ar[0]);
+         if($userID == alphaToDec($lp_)){
+           for($i=1;$i<sizeof($ar);++$i){
+             $location .= $ar[$i].'/';
+           }
+         }
+       } 
+     }
      $success = true;
      $user = [
        'name'            => $row['name'],
        'email'           => $row['email'],
        'passhash'        => $row['passhash'],
        'currentLocation' => $location,
+       'private'         => (0+$row['private'])?'true':'false',
        'id'              => $row['id'],
        'avatar'          => $row['avatar'],
        'admin'           => $row['admin']
@@ -30,5 +47,5 @@
   }else{
     $error = "user name or passhash not provided!";
   }
-  echo json_encode([$success, $user, $error]);
+  echo json_encode([$success, $user, $error, $location, $ar]);
 ?>

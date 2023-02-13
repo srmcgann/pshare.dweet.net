@@ -29,5 +29,5 @@
   } else {
     $error = "username or passhash not provided!";
   }
-  echo json_encode([$success, $files, $filecount, $error]);
+  echo json_encode([$success, $files, $filecount, $error, $currentLocation]);
 ?>

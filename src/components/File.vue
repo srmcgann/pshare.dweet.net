@@ -1,16 +1,30 @@
 <template>
   <div class="fileDiv" :class="{'folderIcon': file.type=='folder'}" ref="fileDiv">
+    <div class="fileButtons">
+
+      <label :for="'privateCheckbox' + file.id" :key="'cblabel'+file.id" class="fileButton checkboxLabel" style="transform: scale(.75);" :title="'toggle public visibility of this '+(+file.folder?'folder':'file')+`\n[`+file.name+' is currently '+(file.private==false?'PUBLIC':'PRIVATE')+']'">
+        <input type="checkbox" :key="'cbkey'+file.id" :id="'privateCheckbox' + file.id" v-model="file.private" @input="togglePublic()">
+        <span class="checkmark" :class="{'warning': file.private==false}" style=";border: 1px solid #fff8"></span>
+      </label>
+      <button @click="renameFile()" :title="'rename'" class="fileButton renameButton"></button>
+      <button v-if="file.type != 'folder'" @click="downloadFile()" :title="'download file'" class="fileButton downloadButton"></button>
+      <button @click="deleteFile()" :title="'delete file'" class="fileButton deleteButton"></button>
+    </div>
+    <div
+      @click="copyLink()"
+      class="file"
+      :ref="file.id"
+      :title="`copy link to -> ${file.name}`"
+    >
+    </div>
     <div
       @click="load()"
       class="file"
       :ref="file.id"
-      :title="`open ${file.name}`+(!(+file.folder)?' in a new browser tab':'')"
+      :title="`open ${file.name}`"
     >
     <div class="fileName" v-html="file.name" :ref="'name_'+file.hash"></div>
     </div>
-    <button @click="renameFile()" :title="'rename'" class="renameButton"></button>
-    <button v-if="file.type != 'folder'" @click="downloadFile()" :title="'download file'" class="downloadButton"></button>
-    <button @click="deleteFile()" :title="'delete file'" class="deleteButton"></button>
   </div>
 </template>
 
@@ -24,15 +38,29 @@ export default {
     }
   },
   methods:{
+    togglePublic(){
+      let sendData = {
+        user: this.state.loggedinUserName,
+        passhash: this.state.loggedinUserHash,
+        fileID: this.file.id,
+        private: this.file.private==false ? 1 : 0
+      }
+      fetch(this.state.baseURL + '/setPrivate.php', this.state.fetchObj(sendData))
+      .then(json=>json.json()).then(data=>{
+        console.log('setPrivate.php[File.vue]',data)
+        //if(data[0]) this.file.private = !(+this.file.private)
+      })
+    },
     load(){
       if(this.file.type != 'folder'){
-        window.open(this.state.fileViewerURL + '/' + this.file.hash )
+        //window.open(this.state.fileViewerURL + '/' + this.file.hash )
+        this.state.view(this.state.fileViewerURL + '/' + this.file.hash)
       } else {
         window.location.href+=this.file.name+'/'
       }
     },
     renameFile(){
-      let newName = prompt('enter a new name')
+      let newName = prompt('enter a new name', this.file.name)
       if(this.file.name != newName && newName){
         let sendData = {
           user: this.state.loggedinUserName,
@@ -42,14 +70,14 @@ export default {
         }
         fetch(this.state.baseURL + '/renameFile.php', this.state.fetchObj(sendData))
         .then(json=>json.json()).then(data=>{
-          console.log(data)
+          console.log('renameFile.php[File.vue]',data)
           if(data[0]) this.file.name = newName
         }) 
       }
     },
     downloadFile(){
       let a = document.createElement('a')
-      a.href = 'proxy.php?url=' + this.state.assetsURL + '/' + this.file.hash
+      a.href = '/proxy.php?url=' + this.state.assetsURL + '/' + this.file.hash
       a.download = this.file.name
       a.style.position = 'absolute'
       a.style.visible = 'hidden'
@@ -115,38 +143,30 @@ export default {
     background-repeat: no-repeat!important;
     background-image: url(https://jsbot.cantelope.org/uploads/2jP7OJ.png)!important;
   }
-  .renameButton{
+  .fileButton{
     width: 20px;
     height: 20px;
     border: none;
-    margin-top: -18px;
-    margin-left: -50px;
     cursor: pointer;
+    margin: 2px;
     display: inline-block;
-    position: absolute;
-    vertical-align: top;
     border-radius: 5px;
-    background-color: #8fca;
     background-position: center center;
     background-size: 16px 16px;
     background-repeat: no-repeat;
+  }
+  .privateCheckbox{
+  }
+  .renameButton{
+    background-color: #8fca;
     background-image: url(https://jsbot.cantelope.org/uploads/11tQv3.png);
   }
+  .downloadButton{
+    background-color: #086;
+    background-image: url(https://jsbot.cantelope.org/uploads/2c0FSr.png);
+  }
   .deleteButton{
-    width: 20px;
-    height: 20px;
-    border: none;
-    margin-top: -18px;
-    margin-left: -20px;
-    cursor: pointer;
-    display: inline-block;
-    position: absolute;
-    vertical-align: top;
-    border-radius: 5px;
     background-color: #200;
-    background-position: center center;
-    background-size: 16px 16px;
-    background-repeat: no-repeat;
     background-image: url(https://jsbot.cantelope.org/uploads/XeGsK.png);
   }
   .fileName{
@@ -167,22 +187,9 @@ export default {
     background-repeat: no-repeat;
     background-size: cover;
   }
-  .downloadButton{
-    width: 20px;
-    height: 20px;
-    border: none;
-    margin-top: -18px;
-    margin-left: -80px;
-    cursor: pointer;
-    display: inline-block;
-    position: absolute;
-    vertical-align: top;
-    border-radius: 5px;
-    background-color: #086;
-    background-position: center center;
-    background-size: 15px 15px;
-    background-repeat: no-repeat;
-    background-image: url(https://jsbot.cantelope.org/uploads/2c0FSr.png);
+  .fileButtons{
+    text-align: center;;
+    margin-top: -15px;
   }
   .fileDiv{
     padding: 0px;
@@ -192,6 +199,9 @@ export default {
     margin: 10px;
     align-self: flex-start;
     border-radius: 5px;
+  }
+  .warning{
+    background: #400!important;
   }
   .file{
     padding: 0px;

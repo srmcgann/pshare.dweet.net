@@ -24,9 +24,9 @@ export default {
   methods:{
     headerText(){
       if(this.state.loggedin){
-        let s = '<button onclick="l=window.location.href.split(\'/\');l.pop();l.pop();l=l.join(\'/\');window.location.href=l+\'/\'" style="min-width:25px" class="button">up</button>'
+        let s = '<button onclick="window.location.href=\'/\'" style="min-width:25px" class="button">top</button><button onclick="l=window.location.href.split(\'/\');l.pop();l.pop();l=l.join(\'/\');window.location.href=l+\'/\'" style="min-width:25px" class="button">up</button>'
         return 'welcome, ' + this.state.loggedinUserName + '<br>' + (this.state.loggedinUserLocation=='/'?'':s) +
-        `current directory: ${this.state.loggedinUserLocation}`
+        `<span style="background: #000;color:#fff;border: 1px solid #4f84;font-size: 14px;">:${this.state.loggedinUserLocation}$</span>`
       } else {
         return 'pshare'
       }
