@@ -1,37 +1,65 @@
 <?
-  require('../db.php');
-  $url = str_replace(":/", "://", $_GET['url']);
-  //stream_set_blocking($src, true);
-  $file = explode('/', $url);
-  $file = $file[sizeof($file)-1];
-  $type = mime_content_type("$assetsDir/$file");
-  if($type != 'directory'){
-    $apacheMap = file_get_contents('http://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types');
-    $map = explode("\n", $apacheMap);
-    $out = [];
-    $found = false;
-    for($i = 0; $i<sizeof($map); ++$i){
-      $els = explode("\t", $map[$i]);
-      $ar = [];
-      forEach($els as $el){
-        if($el){
-          array_push($ar, $el);
-        }
-      }
-      if(sizeof($ar) == 2){
-        $els2 = explode(' ', $ar[1]);
-        forEach($els2 as $el2){
-          if(!$found && $ar[0] == $type){
-            $suffix = $el2;
-            $found = true;
-          }
-        }
-      }
-    }
-    if($found){
-      header("Content-type: $type");
-      echo file_get_contents("$assetsDir/$file");
-    }
-  }
-  //echo json_encode([$found, $suffix, $type]);
+  if(!($url = $_GET['url'])) die();
 ?>
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html, body{
+        margin: 0;
+        background: #000;
+        width: 100%;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+      .main{
+        position: absolute;
+        width:100%;
+        height: 100%;
+      }
+      image,video,audio{
+        object-fit: contain;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main"></div>
+    <script>
+      fetchObj = sendData => {
+        return {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(sendData),
+        }
+      }
+      let sendData = {
+        url: '<?=$url?>'
+      }
+      fetch('asset.php', fetchObj(sendData))
+      .then(res=>res.blob()).then(data=>{
+        type = ''
+        if(data.type.indexOf('image')!=-1) type = 'image'
+        if(data.type.indexOf('video')!=-1) type = 'video'
+        if(data.type.indexOf('audio')!=-1) type = 'audio'
+        let blob = data
+        let url = URL.createObjectURL(blob)
+        switch(type){
+          case 'image':
+            resource = new Image()
+          break
+          case 'video':
+            resource = document.createElement('video')
+          break
+          case 'audio':
+            resource = document.createElement('audio')
+          break
+        }
+        resource.src = url
+        resource.style.width="100%"
+        document.querySelector('.main').appendChild(resource)
+      })
+    </script>
+  </body>
+</html>

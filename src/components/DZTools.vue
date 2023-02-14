@@ -1,6 +1,6 @@
 <template>
   <div class="DZTools">
-    <div class="caption" v-html="caption"></div>
+    <div class="caption" v-html="caption"></div><br>
     <span class="desc">Drag one or more files to this <i>drop zone</i>.</span>
     <span style="float: left;">tools:</span>
     <button

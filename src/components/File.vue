@@ -54,7 +54,7 @@ export default {
     load(){
       if(this.file.type != 'folder'){
         //window.open(this.state.fileViewerURL + '/' + this.file.hash )
-        this.state.view(this.state.fileViewerURL + '/' + this.file.hash)
+        this.state.view(this.state.fileViewerURL + '/?url=' + this.file.hash)
       } else {
         window.location.href+=this.file.name+'/'
       }
