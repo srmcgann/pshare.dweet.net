@@ -266,14 +266,12 @@ export default {
     vertical-align: top;
     overflow-x: hidden;
     overflow-y: auto;
+    text-align: center;
   }
   .fileContainer{
     top: 100px;
     align-content: flex-start;
     display: inline-flex;
-    flex-wrap: wrap;
-    flex-flow: column wrap;
-    justify-content: space-around;
   }
   .fileUploading{
     background: #4f88!important;

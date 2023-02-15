@@ -34,4 +34,8 @@
     }
     return $res;
   }
+
+  function getMimeTypeFromFileContent($content){
+    return (new finfo(FILEINFO_MIME_TYPE))->buffer($content);
+  }
 ?>

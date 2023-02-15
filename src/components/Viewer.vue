@@ -1,9 +1,11 @@
 <template>
-    <button
-      class="cancelButton button"
-      id="viewerClose"
-      @click="state.closeModals()"
-    >close</button>
+  <button
+    class="cancelButton button"
+    id="viewerClose"
+    @keyup.esc="state.closeModals()"
+    ref="viewerClose"
+    @click="state.closeModals()"
+  >close</button>
   <div class="viewer">
    <iframe :src="src" class="viewerFrame"></iframe>
   </div>
@@ -19,8 +21,12 @@ export default {
     }
   },
   methods:{
+    checkKeys(e){
+      console.log(e)
+    }
   },
   mounted(){
+    this.$refs.viewerClose.focus()
   }
 }
 

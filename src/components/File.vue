@@ -51,12 +51,20 @@ export default {
         //if(data[0]) this.file.private = !(+this.file.private)
       })
     },
+    viewableAsset(){
+      return this.file.type.indexOf('image') !== -1 ||
+             this.file.type.indexOf('video') !== -1 ||
+             this.file.type.indexOf('audio') !== -1
+    },
     load(){
-      if(this.file.type != 'folder'){
-        //window.open(this.state.fileViewerURL + '/' + this.file.hash )
+      if(this.viewableAsset()){
         this.state.view(this.state.fileViewerURL + '/?url=' + this.file.hash)
       } else {
-        window.location.href+=this.file.name+'/'
+        if(this.file.type == 'folder'){
+          window.location.href+=this.file.name+'/'
+        } else {
+          this.downloadFile()
+        }
       }
     },
     renameFile(){
@@ -134,8 +142,8 @@ export default {
 
 <style scoped>
   .folderIcon{
-    width: 80px;
-    height: 40px;
+    width: 125px;
+    height: 85px;
     border: none;
     background-color: #2000!important;
     background-position: center center!important;
@@ -174,8 +182,9 @@ export default {
     padding: 5px;
     margin: 5px;
     border-radius: 2px;
-    word-break: space;
-    max-width: 150px;
+    white-space: break-spaces;
+    max-width: 85px;
+    min-width: 85px;
     padding-left: 10px;
     padding-right: 10px;
     line-height: 1;
@@ -196,6 +205,7 @@ export default {
     padding-top:20px;
     background: #000;
     display: inline-block;
+    max-width: 125px;
     margin: 10px;
     align-self: flex-start;
     border-radius: 5px;
