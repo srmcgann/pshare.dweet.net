@@ -55,14 +55,16 @@ export default {
           this.state.loggedinUserHash = data[1].passhash
           this.state.loggedinUserID = data[1].id
           this.state.loggedinUserAvatar = data[1].avatar
+          this.state.loggedinUserBasicIcons = data[1].basicIcons
           this.state.loggedinUserLocation = data[1].currentLocation
           this.state.loggedinUserName = data[1].name
           this.state.loggedinUserEmail = data[1].email
           this.state.admin = !!(+data[1].admin)
           this.state.setCookie()
-          this.state.loadLoggedInUserData()
-          this.state.closeModals()
-          this.state.loggedin = true
+          window.location.reload()
+          //this.state.loadLoggedInUserData()
+          //this.state.closeModals()
+          //this.state.loggedin = true
         }else{
           let el = document.querySelector('#loginError')
           el.style.display = 'block'

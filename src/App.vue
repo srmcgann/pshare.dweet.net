@@ -240,6 +240,7 @@ export default {
         .then(json=>json.json()).then(data=>{
           if(data[0]){
             console.log('cookieLogin.php[App.vue]',data)
+            this.state.loggedin = true
             this.state.loggedinUser = data[1]
             this.state.token = data[1].passhash
             this.state.loggedinUserHash = data[1].passhash
@@ -251,9 +252,9 @@ export default {
             this.state.loggedinUserEmail = data[1].email
             this.state.admin = !!(+data[1].admin)
             this.state.setCookie()
+            //window.location.reload
             this.state.loadLoggedInUserData()
             this.state.closeModals()
-            this.state.loggedin = true
           }else{
             this.clearCookie()
           }
