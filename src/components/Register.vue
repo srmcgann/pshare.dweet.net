@@ -96,7 +96,7 @@ export default {
         email: this.registerEmail
       }
       fetch(this.state.baseURL + '/register.php', this.state.fetchObj(sendData))
-      .then(json=>json.text()).then(data=>{
+      .then(res=>res.json()).then(data=>{
         if(data[0]){
           this.state.loggedinUser = data[1]
           this.state.token = data[1].passhash

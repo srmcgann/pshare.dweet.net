@@ -10,14 +10,14 @@ error_reporting(E_ALL);
   $error = "no (or unknown error)";
   $success = false;
   if($user && $password){
-    $sql = 'SELECT * FROM users WHERE name LIKE "'.$user.'" OR email LIKE "'.$user.'"';
+    $sql = "SELECT * FROM users WHERE LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE('$user', ' ', '')) OR LOWER(REPLACE(email, ' ', '')) = LOWER(REPLACE('$user', ' ', ''))";
     $res = mysqli_query($link, $sql);
     if(!mysqli_num_rows($res)){
       $passhash = password_hash($password, PASSWORD_DEFAULT);
-      $sql = 'INSERT INTO users (name, avatar, admin, passhash, email) VALUES("'.$user.'", "", 0, "'.$passhash.'", "'.$email.'")';
+      $sql = 'INSERT INTO users (name, currentLocation, avatar, admin, passhash, email) VALUES("'.$user.'", "/", "", 0, "'.$passhash.'", "'.$email.'")';
       mysqli_query($link, $sql);
-      $sql = 'SELECT * FROM users WHERE name LIKE "'.$user.'" OR email LIKE "'.$user.'"';
-      $res = mysqli_query($link, $sql);
+      $sql1 = "SELECT * FROM users WHERE LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE('$user', ' ', '')) OR LOWER(REPLACE(email, ' ', '')) = LOWER(REPLACE('$user', ' ', ''))";
+      $res = mysqli_query($link, $sql1);
       if(mysqli_num_rows($res)){
         $row = mysqli_fetch_assoc($res);
         $success = true;
@@ -38,5 +38,5 @@ error_reporting(E_ALL);
   }else{
     $error = "user name or password not provided!";
   }
-  echo json_encode([$success, $user, $error]);
+  echo json_encode([$success, $user, $error, $sql]);
 ?>

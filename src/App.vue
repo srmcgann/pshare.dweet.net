@@ -41,6 +41,9 @@ export default {
         loggedinUserAvatar: '',
         loggedinUserEmail: '',
         loggedinUserName: '',
+        loggedinUserHash: '',
+        loadLoggedInUserData: null,
+        loggedinUserBasicIcons: '',
         loggedinUserID: '',
         loggedinUserFiles: [],
         loggedinUserLocation: '',
@@ -48,7 +51,6 @@ export default {
         decToAlpha: null,
         alphaToDec: null,
         view: null,
-        loggedinUserHash: '',
         setting: null,
         dropTarget: '/',
         fetchObj: null,
@@ -57,7 +59,6 @@ export default {
         closeModals: null,
         login: null,
         token: '',
-        loadLoggedInUserData: null,
         register: null,
         logout: null,
         loginModalVisible: false,
@@ -120,6 +121,7 @@ export default {
       })
       document.cookie = 'loggedinUser=' + this.state.loggedinUserName + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
       document.cookie = 'loggedinUserLocation=' + this.state.loggedinUserLocation + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
+      document.cookie = 'basicIcons=' + this.state.loggedinUserBasicIcons + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
       document.cookie = 'minimized=' + this.state.minimized + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
       document.cookie = 'loggedinUserID=' + this.state.loggedinUserID + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
       document.cookie = 'loggedinUserHash=' + this.state.loggedinUserHash + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
@@ -243,6 +245,7 @@ export default {
             this.state.loggedinUserHash = data[1].passhash
             this.state.loggedinUserID = data[1].id
             this.state.loggedinUserAvatar = data[1].avatar
+            this.state.loggedinUserBasicIcons = !!(+data[1].basicIcons)
             this.state.loggedinUserName = data[1].name
             this.state.loggedinUserLocation = data[1].currentLocation
             this.state.loggedinUserEmail = data[1].email

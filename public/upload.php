@@ -8,7 +8,7 @@
   //$passhash = '$2y$10$Rmne0vHey.ywn7QU/WqUGun9SXUZR6RHjssez4.dvJdAF2ZsB6SA2';
 
   if($user && $passhash){
-    $sql = 'SELECT * FROM users WHERE (name LIKE "'.$user.'" OR email LIKE "'.$user.'") AND passhash = "'.$passhash.'"';
+    $sql = "SELECT * FROM users WHERE (LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE('$user', ' ', '')) OR LOWER(REPLACE(email, ' ', '')) = LOWER(REPLACE('$user', ' ', ''))) AND passhash = \"$passhash\"";
     $res = mysqli_query($link, $sql);
     if(!mysqli_num_rows($res)) die();
   } else {

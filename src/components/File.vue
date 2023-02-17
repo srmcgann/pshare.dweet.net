@@ -1,7 +1,6 @@
 <template>
-  <div class="fileDiv" :class="{'folderIcon': file.type=='folder'}" ref="fileDiv">
+  <div class="fileDiv" :class="{'folderIcon': file.type=='folder', 'basicIcon': file.type!='folder' && state.loggedinUserBasicIcons}" ref="fileDiv">
     <div class="fileButtons">
-
       <label :for="'privateCheckbox' + file.id" :key="'cblabel'+file.id" class="fileButton checkboxLabel" style="transform: scale(.75);" :title="'toggle public visibility of this '+(+file.folder?'folder':'file')+`\n[`+file.name+' is currently '+(file.private==false?'PUBLIC':'PRIVATE')+']'">
         <input type="checkbox" :key="'cbkey'+file.id" :id="'privateCheckbox' + file.id" v-model="file.private" @input="togglePublic()">
         <span class="checkmark" :class="{'warning': file.private==false}" style=";border: 1px solid #fff8"></span>
@@ -47,7 +46,6 @@ export default {
       }
       fetch(this.state.baseURL + '/setPrivate.php', this.state.fetchObj(sendData))
       .then(json=>json.json()).then(data=>{
-        console.log('setPrivate.php[File.vue]',data)
         //if(data[0]) this.file.private = !(+this.file.private)
       })
     },
@@ -105,7 +103,6 @@ export default {
         fetch(this.state.baseURL + '/deleteFile.php', this.state.fetchObj(sendData))
         .then(json=>json.json()).then(data=>{
           if(data[0]){
-            console.log('file deleted')
             this.state.loggedinUserFiles = this.state.loggedinUserFiles.filter(v=>{
               return v.id != this.file.id
             })
@@ -150,6 +147,14 @@ export default {
     background-size: contain!important;
     background-repeat: no-repeat!important;
     background-image: url(https://jsbot.cantelope.org/uploads/2jP7OJ.png)!important;
+  }
+  .basicIcon{
+    background-repeat: no-repeat!important;
+    background-position: center center!important;
+    background-size: 50px!important;
+    background-image: url(http://jsbot.cantelope.org/uploads/2bceZU.png)!important;
+  }
+  .notBasicIcons{
   }
   .fileButton{
     width: 20px;

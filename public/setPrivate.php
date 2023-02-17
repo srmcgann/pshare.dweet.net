@@ -8,7 +8,7 @@
   $private = mysqli_real_escape_string($link, $data->{"private"});
   $success = false;
   if($user && $passhash){
-    $sql = 'SELECT * FROM users WHERE (name LIKE "'.$user.'" OR email LIKE "'.$user.'") AND passhash = "'.$passhash.'"';
+    $sql = "SELECT * FROM users WHERE (LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE('$user', ' ', '')) OR LOWER(REPLACE(email, ' ', '')) = LOWER(REPLACE('$user', ' ', ''))) AND passhash = \"$passhash\"";
     $res = mysqli_query($link, $sql);
     if(!mysqli_num_rows($res)) die();
     $row = mysqli_fetch_assoc($res);

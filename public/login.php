@@ -5,7 +5,7 @@
   $password = mysqli_real_escape_string($link, $data->{"password"});
   $location = mysqli_real_escape_string($link, $data->{"location"});
   if($user && $password){
-    $sql = 'SELECT * FROM users WHERE name LIKE "'.$user.'" OR email LIKE "'.$user.'"';
+    $sql = "SELECT * FROM users WHERE LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE('$user', ' ', '')) OR LOWER(REPLACE(email, ' ', '')) = LOWER(REPLACE('$user', ' ', ''))";
     $res = mysqli_query($link, $sql);
     $success=false;
     $error="no (or unknown) error";
@@ -36,6 +36,7 @@
           'name'            => $row['name'],
           'currentLocation' => $row['currentLocation'],
           'email'           => $row['email'],
+          'basicIcons'      => $row['basicIcons'],
           'passhash'        => $row['passhash'],
           'private'         => (0+$row['private'])?'true':'false',
           'id'              => $row['id'],
