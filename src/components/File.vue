@@ -1,7 +1,11 @@
 <template>
-  <div class="fileDiv" :class="{'folderIcon': file.type=='folder', 'basicIcon': file.type!='folder' && state.loggedinUserBasicIcons}" ref="fileDiv">
+  <div
+    class="fileDiv"
+    :class="{'folderIcon': file.type=='folder', 'basicIcon': file.type!='folder' && state.loggedinUserBasicIcons}"
+    ref="fileDiv"
+  >
     <div class="fileButtons">
-      <label :for="'privateCheckbox' + file.id" :key="'cblabel'+file.id" class="fileButton checkboxLabel" style="transform: scale(.75);" :title="'toggle public visibility of this '+(+file.folder?'folder':'file')+`\n[`+file.name+' is currently '+(file.private==false?'PUBLIC':'PRIVATE')+']'">
+      <label :for="'privateCheckbox' + file.id" :key="'cblabel'+file.id" class="checkboxLabel" style="margin:2px;display:unset;transform: scale(.75);" :title="'toggle public visibility of this '+(+file.folder?'folder':'file')+`\n[`+file.name+' is currently '+(file.private==false?'PUBLIC':'PRIVATE')+']'">
         <input type="checkbox" :key="'cbkey'+file.id" :id="'privateCheckbox' + file.id" v-model="file.private" @input="togglePublic()">
         <span class="checkmark" :class="{'warning': file.private==false}" style=";border: 1px solid #fff8"></span>
       </label>
@@ -34,6 +38,9 @@ export default {
   props: ['state', 'file'],
   data(){
     return {
+      posX: null,
+      posY: null,
+      dragging: false
     }
   },
   methods:{
@@ -112,8 +119,36 @@ export default {
     }
   },
   mounted(){
+    let thumbEl = this.$refs.fileDiv
+    thumbEl.onmousedown=e=>{
+      console.log('mousedown (file id = ' + this.file.id + '): ', e)
+      thumbEl.style.position = 'absolute'
+      let rect = thumbEl.getBoundingClientRect()
+      this.posX = rect.left - e.pageX
+      this.posY = rect.top - e.pageY - 50
+      this.dragging = true
+    } 
+    window.onmouseup = thumbEl.onmouseup=e=>{
+      console.log('mouseup (file id = ' + this.file.id + '): ', e)
+      thumbEl.style.position = 'unset'
+      this.dragging=false
+    }
+    thumbEl.ondragend=e=>{
+      e.stopPropagation()
+      e.preventDefault()
+      thumbEl.style.position = 'unset'
+    }
+    thumbEl.onmousemove=e=>{
+      if(this.dragging){
+        thumbEl.style.left = this.posX + e.pageX + 'px'
+        thumbEl.style.top = this.posY + e.pageY - 100 + 'px'
+      }
+    }
+    thumbEl.ondrag=e=>{
+      e.stopPropagation()
+      e.preventDefault()
+    }
     if(this.file.type.indexOf('image')!==-1){
-      let thumbEl = this.$refs.fileDiv
       thumbEl.style.backgroundSize = 'cover'
       thumbEl.style.repeat = 'no-repeat'
       thumbEl.style.position = 'center center'
@@ -152,7 +187,7 @@ export default {
     background-repeat: no-repeat!important;
     background-position: center center!important;
     background-size: 50px!important;
-    background-image: url(http://jsbot.cantelope.org/uploads/2bceZU.png)!important;
+    background-image: url(https://jsbot.cantelope.org/uploads/2bceZU.png)!important;
   }
   .notBasicIcons{
   }
@@ -183,7 +218,7 @@ export default {
     background-image: url(https://jsbot.cantelope.org/uploads/XeGsK.png);
   }
   .fileName{
-    background: #0008;
+    background: #033;
     padding: 5px;
     margin: 5px;
     border-radius: 2px;

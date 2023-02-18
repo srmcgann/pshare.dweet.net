@@ -20,7 +20,7 @@
     </div>
     <div v-else>
       <div v-if="finished">
-        <div v-for="file in state.loggedinUserFiles" class="fileContainer">
+        <div class="fileContainer" v-for="file in state.loggedinUserFiles" >
           <File :state="state" :file="file" />
         </div>
       </div>
@@ -46,11 +46,12 @@
 <script>
 import File from './File'
 import DZTools from './DZTools'
+
 export default {
   name: 'Dropzone',
   components: {
     File,
-    DZTools
+    DZTools,
   },
   props: ['state', 'caption'],
   data(){
