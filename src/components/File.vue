@@ -40,6 +40,8 @@ export default {
     return {
       posX: null,
       posY: null,
+      deltaX: null,
+      deltaY: null,
       dragging: false
     }
   },
@@ -121,32 +123,38 @@ export default {
   mounted(){
     let thumbEl = this.$refs.fileDiv
     thumbEl.onmousedown=e=>{
-      console.log('mousedown (file id = ' + this.file.id + '): ', e)
+      e.preventDefault()
+      e.stopPropagation()
       thumbEl.style.position = 'absolute'
+      this.deltaX = e.pageX
+      this.deltaY = e.pageY
       let rect = thumbEl.getBoundingClientRect()
-      this.posX = rect.left - e.pageX
-      this.posY = rect.top - e.pageY - 50
+      this.posX = rect.left
+      this.posY = rect.top - 100
       this.dragging = true
     } 
-    window.onmouseup = thumbEl.onmouseup=e=>{
-      console.log('mouseup (file id = ' + this.file.id + '): ', e)
+    window.onmouseup = thumbEl.onmouseup = e => {
       thumbEl.style.position = 'unset'
       this.dragging=false
     }
     thumbEl.ondragend=e=>{
       e.stopPropagation()
       e.preventDefault()
+      return null
       thumbEl.style.position = 'unset'
     }
     thumbEl.onmousemove=e=>{
       if(this.dragging){
-        thumbEl.style.left = this.posX + e.pageX + 'px'
-        thumbEl.style.top = this.posY + e.pageY - 100 + 'px'
+        e.preventDefault()
+        e.stopPropagation()
+        thumbEl.style.left = this.posX + (e.pageX - this.deltaX) + 'px'
+        thumbEl.style.top = this.posY + (e.pageY - this.deltaY) + 'px'
       }
     }
     thumbEl.ondrag=e=>{
       e.stopPropagation()
       e.preventDefault()
+      return null
     }
     if(this.file.type.indexOf('image')!==-1){
       thumbEl.style.backgroundSize = 'cover'
