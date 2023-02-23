@@ -71,8 +71,9 @@
           case 'video':
             resource = document.createElement('video')
             resource.loop = true
-            resource.muted = true
-            resource.style.height="calc(100% - 20px)"
+            //resource.muted = true
+            resource.style.maxHeight="calc(100% - 50px)"
+            resource.style.height="calc(100% - 50px)"
             resource.style.width="calc(100% - 20px)"
             resource.style.objectFit="contain"
             console.log('video detected')

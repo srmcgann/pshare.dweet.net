@@ -14,8 +14,8 @@
   >
     <DZTools :state="state" :caption="caption"/>
     <div v-if="!showProgress && !finished">
-      <div class="fileContainer" v-for="file in state.loggedinUserFiles" >
-        <File :state="state" :file="file" />
+      <div v-for="(file, idx) in state.loggedinUserFiles" class="fileContainer">
+        <File :state="state" :file="file"/>
       </div>
     </div>
     <div v-else>
@@ -62,6 +62,7 @@ export default {
       fileList: [],
       count: 0,
       finished: false,
+      drag: false,
       showUploadProgress: false
     }
   },

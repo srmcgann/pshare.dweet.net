@@ -123,6 +123,7 @@ export default {
   mounted(){
     let thumbEl = this.$refs.fileDiv
     thumbEl.onmousedown=e=>{
+      return
       e.preventDefault()
       e.stopPropagation()
       thumbEl.style.position = 'absolute'
@@ -134,16 +135,19 @@ export default {
       this.dragging = true
     } 
     window.onmouseup = thumbEl.onmouseup = e => {
+      return
       thumbEl.style.position = 'unset'
       this.dragging=false
     }
     thumbEl.ondragend=e=>{
+      return
       e.stopPropagation()
       e.preventDefault()
       return null
       thumbEl.style.position = 'unset'
     }
     thumbEl.onmousemove=e=>{
+      return
       if(this.dragging){
         e.preventDefault()
         e.stopPropagation()
@@ -152,6 +156,7 @@ export default {
       }
     }
     thumbEl.ondrag=e=>{
+      return
       e.stopPropagation()
       e.preventDefault()
       return null
