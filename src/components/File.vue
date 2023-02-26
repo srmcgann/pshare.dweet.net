@@ -4,6 +4,11 @@
     :class="{'folderIcon': file.type=='folder', 'basicIcon': file.type!='folder' && state.loggedinUserBasicIcons}"
     ref="fileDiv"
   >
+    <div
+      class="dragHandle"
+      ref="dragHandle"
+      @mousedown="mousedown"
+    ></div>
     <div class="fileButtons">
       <label :for="'privateCheckbox' + file.id" :key="'cblabel'+file.id" class="checkboxLabel" style="margin:2px;display:unset;transform: scale(.75);" :title="'toggle public visibility of this '+(+file.folder?'folder':'file')+`\n[`+file.name+' is currently '+(file.private==false?'PUBLIC':'PRIVATE')+']'">
         <input type="checkbox" :key="'cbkey'+file.id" :id="'privateCheckbox' + file.id" v-model="file.private" @input="togglePublic()">
@@ -38,14 +43,12 @@ export default {
   props: ['state', 'file'],
   data(){
     return {
-      posX: null,
-      posY: null,
-      deltaX: null,
-      deltaY: null,
-      dragging: false
     }
   },
   methods:{
+    drag(){
+      
+    },
     togglePublic(){
       let sendData = {
         user: this.state.loggedinUserName,
@@ -122,44 +125,20 @@ export default {
   },
   mounted(){
     let thumbEl = this.$refs.fileDiv
-    thumbEl.onmousedown=e=>{
-      return
+    let dragHandle = this.$refs.dragHandle
+    let containerRect = thumbEl.getBoundingClientRect()
+    this.file.fileDiv = this.$refs.fileDiv
+    this.file.rect = this.$refs.fileDiv.getBoundingClientRect()
+ 
+    dragHandle.onmousedown = e => {
       e.preventDefault()
       e.stopPropagation()
-      thumbEl.style.position = 'absolute'
-      this.deltaX = e.pageX
-      this.deltaY = e.pageY
+      this.state.button = true
       let rect = thumbEl.getBoundingClientRect()
-      this.posX = rect.left
-      this.posY = rect.top - 100
-      this.dragging = true
-    } 
-    window.onmouseup = thumbEl.onmouseup = e => {
-      return
-      thumbEl.style.position = 'unset'
-      this.dragging=false
-    }
-    thumbEl.ondragend=e=>{
-      return
-      e.stopPropagation()
-      e.preventDefault()
-      return null
-      thumbEl.style.position = 'unset'
-    }
-    thumbEl.onmousemove=e=>{
-      return
-      if(this.dragging){
-        e.preventDefault()
-        e.stopPropagation()
-        thumbEl.style.left = this.posX + (e.pageX - this.deltaX) + 'px'
-        thumbEl.style.top = this.posY + (e.pageY - this.deltaY) + 'px'
-      }
-    }
-    thumbEl.ondrag=e=>{
-      return
-      e.stopPropagation()
-      e.preventDefault()
-      return null
+      thumbEl.style.position = "absolute"
+      this.state.curFileDragging = thumbEl
+      this.state.cursorX = rect.x - e.pageX 
+      this.state.cursorY = rect.y - e.pageY
     }
     if(this.file.type.indexOf('image')!==-1){
       thumbEl.style.backgroundSize = 'cover'
@@ -216,6 +195,14 @@ export default {
     background-size: 16px 16px;
     background-repeat: no-repeat;
   }
+  .dragHandle{
+    width: 125px;
+    height: 100px;
+    margin-top: -20px;
+    background: #f004;
+    position: absolute;
+    z-index: 10;
+  }
   .privateCheckbox{
   }
   .renameButton{
@@ -234,6 +221,8 @@ export default {
     background: #033;
     padding: 5px;
     margin: 5px;
+    position: relative;
+    z-index: 100;
     border-radius: 2px;
     white-space: break-spaces;
     max-width: 85px;
@@ -252,6 +241,9 @@ export default {
   .fileButtons{
     text-align: center;;
     margin-top: -15px;
+    position: absolute;
+    margin-left: 10px;
+    z-index: 100;
   }
   .fileDiv{
     padding: 0px;
@@ -259,6 +251,7 @@ export default {
     background: #000;
     display: inline-block;
     max-width: 125px;
+    min-height: 80px;
     margin: 10px;
     align-self: flex-start;
     border-radius: 5px;

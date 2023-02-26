@@ -42,9 +42,13 @@ export default {
         loggedinUserEmail: '',
         loggedinUserName: '',
         loggedinUserHash: '',
+        cursorX: null,
+        cursorY: null,
         loadLoggedInUserData: null,
         loggedinUserBasicIcons: '',
+        positionFilesAbsolutely: null,
         loggedinUserID: '',
+        curFileDragging: null,
         loggedinUserFiles: [],
         loggedinUserLocation: '',
         viewerSrc: '',
@@ -161,6 +165,7 @@ export default {
             this.state.loggedinUserFiles = data[1]
             let s = window.location.origin+'/'+this.decToAlpha(this.state.loggedinUserID)+this.state.loggedinUserLocation
             window.history.pushState(s, null, s)
+            this.$nextTick(()=>this.state.positionFilesAbsolutely())
           })
         }else{
           console.log('loadUserData[App.vue]',data)
@@ -207,6 +212,16 @@ export default {
       let cookies = document.cookie
       cookies.split(';').map(v=>{
         document.cookie = v + '; expires=' + (new Date(0)).toUTCString() + '; path=/; domain=' + this.state.rootDomain
+      })
+    },
+    positionFilesAbsolutely(){
+      this.$nextTick(()=>{
+        this.state.loggedinUserFiles.map(v=>{
+          let rect = v.rect
+          v.fileDiv.style.position = 'absolute'
+          v.fileDiv.style.left = (rect.x - 11) + 'px'
+          v.fileDiv.style.top = (rect.y - 82) + 'px'
+        })
       })
     },
     checkCookie(){
@@ -260,6 +275,22 @@ export default {
           }
         })
       }
+    },
+    setupListeners(){
+      document.body.onmousemove = e => {
+        e.preventDefault()
+        e.stopPropagation()
+        if(this.state.button) console.log(this.state.curFileDragging)
+        if(this.state.curFileDragging != null){
+          this.state.curFileDragging.style.position = 'absolute'
+          this.state.curFileDragging.style.left = (this.state.cursorX - 5 + e.pageX) + 'px'
+          this.state.curFileDragging.style.top = (this.state.cursorY - 80 + e.pageY) + 'px'
+        }
+      }
+      document.body.onmouseup=e=>{
+        this.state.button = false
+        this.state.curFileDragging = null
+      }
     }
   },
   mounted(){
@@ -276,7 +307,9 @@ export default {
     this.state.showModals = this.showModals
     this.state.closeModals = this.closeModals
     this.state.loadLoggedInUserData = this.loadLoggedInUserData
+    this.state.positionFilesAbsolutely = this.positionFilesAbsolutely
     this.checkCookie()
+    this.setupListeners()
   }
 }
 </script>

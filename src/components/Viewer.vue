@@ -33,12 +33,6 @@ export default {
 </script>
 
 <style scoped>
-  #viewerClose{
-    position: absolute;
-    right: 0;
-    margin-right: 50px;
-    margin-top: 50px;
-  }
   .viewerFrame{
     width: 100%;
     position: fixed;
@@ -51,8 +45,8 @@ export default {
   #viewerClose{
     position: absolute;
     right: 0;
-    z-index: 100;
     margin-right: 50px;
+    z-index: 210;
     margin-top: 50px;
   }
   .viewer{
@@ -64,7 +58,7 @@ export default {
     color: #fff;
     width: 100vw;
     height: 100vh;
-    z-index: 10;
+    z-index: 200;
     background: #011e;
   }
 </style>
