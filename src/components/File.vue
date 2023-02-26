@@ -128,15 +128,19 @@ export default {
     let dragHandle = this.$refs.dragHandle
     let containerRect = thumbEl.getBoundingClientRect()
     this.file.fileDiv = this.$refs.fileDiv
+    this.file.dragHandle = dragHandle
+    this.file.dragHandleRect = dragHandle.getBoundingClientRect()
     this.file.rect = this.$refs.fileDiv.getBoundingClientRect()
  
     dragHandle.onmousedown = e => {
+      if(e.button !== 0) return
       e.preventDefault()
       e.stopPropagation()
       this.state.button = true
       let rect = thumbEl.getBoundingClientRect()
       thumbEl.style.position = "absolute"
       this.state.curFileDragging = thumbEl
+      this.state.curFileDragging.file = this.file
       this.state.cursorX = rect.x - e.pageX 
       this.state.cursorY = rect.y - e.pageY
     }

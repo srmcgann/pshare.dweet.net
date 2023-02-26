@@ -276,20 +276,63 @@ export default {
         })
       }
     },
+    moveFile(src, dest){
+      let sendData = {
+        user: this.state.loggedinUserName,
+        passhash: this.state.loggedinUserHash,
+        src: src.id,
+        dest: dest.id
+      }
+      console.log(sendData)
+      fetch(this.state.baseURL + '/moveFile.php',  this.state.fetchObj(sendData))
+      .then(json=>json.json()).then(data=>{
+        console.log(data)
+        if(data[0]){
+          this.state.loggedinUserFiles = this.state.loggedinUserFiles.filter(v=>{
+            return v.id != src.id
+          })
+        }
+      })
+    },
     setupListeners(){
       document.body.onmousemove = e => {
         e.preventDefault()
         e.stopPropagation()
-        if(this.state.button) console.log(this.state.curFileDragging)
-        if(this.state.curFileDragging != null){
-          this.state.curFileDragging.style.position = 'absolute'
+        if(this.state.curFileDragging != null && this.state.button){
+          this.state.loggedinUserFiles.map(v=>{
+            v.dragHandle.style.backgroundColor = '#f004'
+          })
           this.state.curFileDragging.style.left = (this.state.cursorX - 5 + e.pageX) + 'px'
           this.state.curFileDragging.style.top = (this.state.cursorY - 80 + e.pageY) + 'px'
+          this.state.loggedinUserFiles.map(v=>{
+            if(e.pageX > v.dragHandleRect.x && e.pageX < v.dragHandleRect.x + v.dragHandleRect.width &&
+              e.pageY > v.dragHandleRect.y && e.pageY < v.dragHandleRect.y + v.dragHandleRect.height){
+                if(v.type == 'folder'){
+                  v.dragHandle.style.backgroundColor = '#0f44'
+                }
+              }
+          })
         }
       }
       document.body.onmouseup=e=>{
+        console.log(1)
+        if(this.state.curFileDragging != null && e.button == 0){
+          console.log(2)
+          this.state.loggedinUserFiles.map(v=>{
+            if(e.pageX > v.dragHandleRect.x && e.pageX < v.dragHandleRect.x + v.dragHandleRect.width &&
+              e.pageY > v.dragHandleRect.y && e.pageY < v.dragHandleRect.y + v.dragHandleRect.height){
+                console.log(3)
+                if(v.type == 'folder'){
+                  console.log('moveFile -> ', this.state.curFileDragging.file, v)
+                  this.moveFile(this.state.curFileDragging.file, v)
+                }
+              }
+          })          
+        }
         this.state.button = false
-        this.state.curFileDragging = null
+        //this.state.curFileDragging.file = null
+        //this.state.curFileDragging = null
+        this.state.button = false
       }
     }
   },
