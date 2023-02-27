@@ -15,7 +15,7 @@
     <DZTools :state="state" :caption="caption"/>
     <div v-if="!showProgress && !finished">
       <div v-for="(file, idx) in state.loggedinUserFiles" class="fileContainer">
-        <File :state="state" :file="file"/>
+        <File :state="state" :file="file" :dropzone="dropzone"/>
       </div>
     </div>
     <div v-else>
@@ -67,6 +67,9 @@ export default {
     }
   },
   computed:{
+    dropzone(){
+      return this.$refs['drop_zone']
+    },
     filteredFiles(){
       let rw = 100
       let cl = 5

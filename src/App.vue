@@ -42,6 +42,7 @@ export default {
         loggedinUserEmail: '',
         loggedinUserName: '',
         loggedinUserHash: '',
+        parentFolderDropTarget: null,
         cursorX: null,
         cursorY: null,
         loadLoggedInUserData: null,
@@ -214,13 +215,26 @@ export default {
         document.cookie = v + '; expires=' + (new Date(0)).toUTCString() + '; path=/; domain=' + this.state.rootDomain
       })
     },
-    positionFilesAbsolutely(){
+    positionFilesAbsolutely(reset){
       this.$nextTick(()=>{
-        this.state.loggedinUserFiles.map(v=>{
-          let rect = v.rect
-          v.fileDiv.style.position = 'absolute'
-          v.fileDiv.style.left = (rect.x - 11) + 'px'
-          v.fileDiv.style.top = (rect.y - 82) + 'px'
+        if(reset){
+          this.state.loggedinUserFiles.map(v => {
+            v.fileDiv.style.position = 'initial'
+            v.fileDiv.style.left = 'initial'
+            v.fileDiv.style.top = 'initial'
+          })
+        }
+        this.$nextTick(() => {
+          this.state.loggedinUserFiles.map(v => {
+            v.rect = v.fileDiv.getBoundingClientRect()
+            v.dragHandleRect = v.dragHandle.getBoundingClientRect()
+          })
+          this.state.loggedinUserFiles.map(v => {
+            let rect = v.rect//fileDiv.getBoundingClientRect()
+            v.fileDiv.style.position = 'absolute'
+            v.fileDiv.style.left = (rect.x - 11) + 'px'
+            v.fileDiv.style.top = (rect.y - 82) + 'px'
+          })
         })
       })
     },
@@ -301,27 +315,30 @@ export default {
         if(this.state.curFileDragging != null && this.state.button){
           this.state.loggedinUserFiles.map(v=>{
             v.dragHandle.style.backgroundColor = '#f004'
+            //v.rect = v.fileDiv.getBoundingClientRect()
+            //v.dragHandleRect = v.dragHandle.getBoundingClientRect()
           })
           this.state.curFileDragging.style.left = (this.state.cursorX - 5 + e.pageX) + 'px'
-          this.state.curFileDragging.style.top = (this.state.cursorY - 80 + e.pageY) + 'px'
+          this.state.curFileDragging.style.top = (this.state.curFileDragging.dropzone.scrollTop + this.state.cursorY - 80 + e.pageY) + 'px'
           this.state.loggedinUserFiles.map(v=>{
             if(e.pageX > v.dragHandleRect.x && e.pageX < v.dragHandleRect.x + v.dragHandleRect.width &&
-              e.pageY > v.dragHandleRect.y && e.pageY < v.dragHandleRect.y + v.dragHandleRect.height){
+              e.pageY > v.dragHandleRect.y - this.state.curFileDragging.dropzone.scrollTop && e.pageY < v.dragHandleRect.y + v.dragHandleRect.height - this.state.curFileDragging.dropzone.scrollTop){
                 if(v.type == 'folder'){
                   v.dragHandle.style.backgroundColor = '#0f44'
                 }
               }
           })
+          
         }
       }
+      window.onresize = () => {
+        this.positionFilesAbsolutely(true) 
+      }
       document.body.onmouseup=e=>{
-        console.log(1)
         if(this.state.curFileDragging != null && e.button == 0){
-          console.log(2)
           this.state.loggedinUserFiles.map(v=>{
             if(e.pageX > v.dragHandleRect.x && e.pageX < v.dragHandleRect.x + v.dragHandleRect.width &&
               e.pageY > v.dragHandleRect.y && e.pageY < v.dragHandleRect.y + v.dragHandleRect.height){
-                console.log(3)
                 if(v.type == 'folder'){
                   console.log('moveFile -> ', this.state.curFileDragging.file, v)
                   this.moveFile(this.state.curFileDragging.file, v)
@@ -355,6 +372,7 @@ export default {
     this.setupListeners()
   }
 }
+
 </script>
 
 <style>
@@ -367,6 +385,28 @@ html, body{
   overflow: hidden;
   margin: 0;
   line-height: 1.1em;
+}
+.folderIcon{
+  width: 125px;
+  height: 85px;
+  border: none;
+  background-color: #2000!important;
+  background-position: center center!important;
+  background-size: contain!important;
+  background-repeat: no-repeat!important;
+  background-image: url(https://jsbot.cantelope.org/uploads/2jP7OJ.png)!important;
+}
+.fileDiv{
+  padding: 0px;
+  padding-top:20px;
+  background: #000;
+  position: relative;
+  display: inline-block;
+  max-width: 125px;
+  min-height: 80px;
+  margin: 10px;
+  align-self: flex-start;
+  border-radius: 5px;
 }
 .basicTextInput:focus{
   outline: none;

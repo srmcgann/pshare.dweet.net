@@ -40,7 +40,7 @@
 
 export default {
   name: 'File',
-  props: ['state', 'file'],
+  props: ['state', 'file', 'dropzone'],
   data(){
     return {
     }
@@ -141,6 +141,7 @@ export default {
       thumbEl.style.position = "absolute"
       this.state.curFileDragging = thumbEl
       this.state.curFileDragging.file = this.file
+      this.state.curFileDragging.dropzone = this.dropzone
       this.state.cursorX = rect.x - e.pageX 
       this.state.cursorY = rect.y - e.pageY
     }
@@ -169,16 +170,6 @@ export default {
 </script>
 
 <style scoped>
-  .folderIcon{
-    width: 125px;
-    height: 85px;
-    border: none;
-    background-color: #2000!important;
-    background-position: center center!important;
-    background-size: contain!important;
-    background-repeat: no-repeat!important;
-    background-image: url(https://jsbot.cantelope.org/uploads/2jP7OJ.png)!important;
-  }
   .basicIcon{
     background-repeat: no-repeat!important;
     background-position: center center!important;
@@ -248,17 +239,6 @@ export default {
     position: absolute;
     margin-left: 10px;
     z-index: 100;
-  }
-  .fileDiv{
-    padding: 0px;
-    padding-top:20px;
-    background: #000;
-    display: inline-block;
-    max-width: 125px;
-    min-height: 80px;
-    margin: 10px;
-    align-self: flex-start;
-    border-radius: 5px;
   }
   .warning{
     background: #400!important;

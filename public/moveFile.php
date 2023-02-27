@@ -19,7 +19,7 @@
       $row = mysqli_fetch_assoc($res);
       if($row['type'] == 'folder'){
         $newLocation = $row['location'] . $row['name'] . '/';
-        $sql = 'UPDATE files SET location = "'.$newLocation.'" WHERE id = '. $src;
+        $sql = 'UPDATE files SET location = "' . $newLocation . '" WHERE id = ' . $src;
         mysqli_query($link, $sql);
       }
       $success = true;
