@@ -1,9 +1,15 @@
 <template>
   <div class="headerTools">
     <div v-if="state.loggedin">
-      <label :for="'basicIconsCheckbox'" class="checkboxLabel basicIcons" style="transform: scale(.75);" :title="'use/don\'t use basic icons\n(by default, gif thumbnails are animated for example\n but with many of them this can cause performance problems'">
-        <input type="checkbox" id="basicIconsCheckbox" v-model="state.loggedinUserBasicIcons" @input="toggleBasicIcons()">
+      <label :for="'basicIconsCheckbox'" class="checkboxLabel headerToolsCheckboxes" style="transform: scale(.75);" :title="'use/don\'t use basic icons\n(by default, gif thumbnails are animated for example\n but with many of them this can cause performance problems'">
+        <input type="checkbox" id="basicIconsCheckbox" v-model="state.loggedinUserBasicIcons" @input="toggleUserProperty('basicIcons')">
         <span class="checkmark" style=";border: 1px solid #fff8"></span>
+        <span class="headerToolsCheckboxLabel" style="margin-top: 30px">basic icons</span>
+      </label>
+      <label :for="'snapToGridCheckbox'" class="checkboxLabel headerToolsCheckboxes" style="transform: scale(.75); margin-top:35px;" :title="'toggle auto-align icons to grid'">
+        <input type="checkbox" id="snapToGridCheckbox" v-model="state.loggedinUserSnapToGrid" @input="toggleUserProperty('snapToGrid')">
+        <span class="checkmark" style=";border: 1px solid #fff8"></span>
+        <span class="headerToolsCheckboxLabel" style="margin-top: 30px">snap to grid</span>
       </label>
       <button
         class="button"
@@ -49,13 +55,15 @@ export default {
     register(){
       this.state.register()
     },
-    toggleBasicIcons(){
+    toggleUserProperty(property){
       let sendData = {
         user: this.state.loggedinUserName,
         passhash: this.state.loggedinUserHash,
-        basicIcons: this.state.loggedinUserBasicIcons==false ? 1 : 0
+        property,
+        value: this.state['loggedinUser'+(property.split('').map((v,i)=>i?v:v.toUpperCase()).join(''))]==false ? 1 : 0
       }
-      fetch(this.state.baseURL + '/setBasicIcons.php', this.state.fetchObj(sendData))
+      console.log(sendData)
+      fetch(this.state.baseURL + '/setUserProperty.php', this.state.fetchObj(sendData))
       .then(json=>json.json()).then(data=>{
         console.log(data)
         //if(data[0]) this.file.private = !(+this.file.private)
@@ -74,9 +82,16 @@ export default {
 </script>
 
 <style scoped>
-  .basicIcons{
+  .headerToolsCheckboxes{
     position: absolute;
     margin-left: -30px;
+  }
+  .headerToolsCheckboxLabel{
+    font-size: 10px;
+    position: absolute;
+    margin-left: -72px;
+    line-height: 1em;
+    min-width: 73px;
   }
   .headerTools{
     position: absolute;

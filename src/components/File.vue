@@ -16,7 +16,7 @@
       </label>
       <button @click="renameFile()" :title="'rename'" class="fileButton renameButton"></button>
       <button v-if="file.type != 'folder'" @click="downloadFile()" :title="'download file'" class="fileButton downloadButton"></button>
-      <button @click="deleteFile()" :title="'delete file'" class="fileButton deleteButton"></button>
+      <button @click="deleteFile()" :title="'delete'" class="fileButton deleteButton"></button>
     </div>
     <div
       @click="copyLink()"
@@ -197,6 +197,9 @@ export default {
     background: #f004;
     position: absolute;
     z-index: 10;
+  }
+  .dragHandle:hover{
+    background: #0f0;
   }
   .privateCheckbox{
   }

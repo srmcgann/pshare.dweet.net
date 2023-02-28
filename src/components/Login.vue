@@ -56,6 +56,7 @@ export default {
           this.state.loggedinUserID = data[1].id
           this.state.loggedinUserAvatar = data[1].avatar
           this.state.loggedinUserBasicIcons = data[1].basicIcons
+          this.state.loggedinUserSnapToGrid = data[1].snapToGrid
           this.state.loggedinUserLocation = data[1].currentLocation
           this.state.loggedinUserName = data[1].name
           this.state.loggedinUserEmail = data[1].email

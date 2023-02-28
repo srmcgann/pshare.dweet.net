@@ -33,9 +33,9 @@
        'name'            => $row['name'],
        'email'           => $row['email'],
        'passhash'        => $row['passhash'],
-       'basicIcons'      => $row['basicIcons'],
+       'basicIcons'      => (0+$row['basicIcons'])?'true':'false',
+       'snapToGrid'      => (0+$row['snapToGrid'])?'true':'false',
        'currentLocation' => $location,
-       'private'         => (0+$row['private'])?'true':'false',
        'id'              => $row['id'],
        'avatar'          => $row['avatar'],
        'admin'           => $row['admin']

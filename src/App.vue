@@ -47,6 +47,7 @@ export default {
         cursorY: null,
         loadLoggedInUserData: null,
         loggedinUserBasicIcons: '',
+        loggedinUserSnapToGrid: '',
         positionFilesAbsolutely: null,
         loggedinUserID: '',
         curFileDragging: null,
@@ -126,7 +127,8 @@ export default {
       })
       document.cookie = 'loggedinUser=' + this.state.loggedinUserName + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
       document.cookie = 'loggedinUserLocation=' + this.state.loggedinUserLocation + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
-      document.cookie = 'basicIcons=' + this.state.loggedinUserBasicIcons + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
+      //document.cookie = 'basicIcons=' + this.state.loggedinUserBasicIcons + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
+      //document.cookie = 'snapToGrid=' + this.state.loggedinUserSnapToGrid + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
       document.cookie = 'minimized=' + this.state.minimized + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
       document.cookie = 'loggedinUserID=' + this.state.loggedinUserID + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
       document.cookie = 'loggedinUserHash=' + this.state.loggedinUserHash + '; expires=' + (new Date((Date.now()+3153600000000))).toUTCString() + '; path=/; domain=' + this.state.rootDomain
@@ -275,7 +277,8 @@ export default {
             this.state.loggedinUserHash = data[1].passhash
             this.state.loggedinUserID = data[1].id
             this.state.loggedinUserAvatar = data[1].avatar
-            this.state.loggedinUserBasicIcons = !!(+data[1].basicIcons)
+            this.state.loggedinUserBasicIcons = eval(data[1].basicIcons)//!!(+data[1].basicIcons)
+            this.state.loggedinUserSnapToGrid = eval(data[1].snapToGrid)//!!(+data[1].snapToGrid)
             this.state.loggedinUserName = data[1].name
             this.state.loggedinUserLocation = data[1].currentLocation
             this.state.loggedinUserEmail = data[1].email
