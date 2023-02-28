@@ -199,7 +199,7 @@ export default {
     z-index: 10;
   }
   .dragHandle:hover{
-    background: #0f0;
+    background: #0f04;
   }
   .privateCheckbox{
   }
@@ -223,6 +223,7 @@ export default {
     z-index: 100;
     border-radius: 2px;
     white-space: break-spaces;
+    word-break: break-all;
     max-width: 85px;
     min-width: 85px;
     padding-left: 10px;

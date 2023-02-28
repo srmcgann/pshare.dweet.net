@@ -3,6 +3,8 @@
     <div class="caption" v-html="caption"></div><br>
     <div
       ref="parentFolderDropTarget" 
+      @click="goUp()"
+      :title="'click to go up a directory'"
       v-if="this.state.loggedinUserLocation !== '/'"
       class="folderIcon fileDiv parentFolder"
     >
@@ -33,6 +35,11 @@ export default {
     }
   },
   methods:{
+    goUp(){
+      let l = window.location.href.split('/')
+      l.pop();l.pop()
+      l=l.join('/');window.location.href=l+'/'
+    },
     createFolder(){
       let folderName = prompt('enter the name of the folder:', 'new folder name');
       if(!folderName) return
@@ -78,6 +85,7 @@ export default {
   .parentFolder{
     width: 60px;
     height: 60px;
+    cursor: pointer;
     min-height: unset;
     padding: unset;
     margin: 10px;

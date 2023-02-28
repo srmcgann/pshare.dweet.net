@@ -14,13 +14,13 @@
   >
     <DZTools :state="state" :caption="caption"/>
     <div v-if="!showProgress && !finished">
-      <div v-for="(file, idx) in state.loggedinUserFiles" class="fileContainer">
+      <div v-for="(file, idx) in state.loggedinUserFiles" :key="idx" class="fileContainer">
         <File :state="state" :file="file" :dropzone="dropzone"/>
       </div>
     </div>
     <div v-else>
       <div v-if="finished">
-        <div class="fileContainer" v-for="file in state.loggedinUserFiles" >
+        <div class="fileContainer" :key="idx" v-for="file in state.loggedinUserFiles" >
           <File :state="state" :file="file" />
         </div>
       </div>
