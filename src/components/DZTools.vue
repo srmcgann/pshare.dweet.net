@@ -52,7 +52,8 @@ export default {
       fetch(this.state.baseURL + '/createFolder.php', this.state.fetchObj(sendData))
       .then(json=>json.json()).then(data=>{
         if(data[0]){
-          this.state.loggedinUserFiles.push(data[2])          
+          this.state.loggedinUserFiles.push(data[2])
+          this.state.positionFilesAbsolutely(true) 
         }else{
           console.log('error creating folder!')
         }

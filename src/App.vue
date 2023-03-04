@@ -335,8 +335,9 @@ export default {
         e.preventDefault()
         e.stopPropagation()
         if(this.state.curFileDragging != null && this.state.button){
-          console.log(this.state.parentFolderDropTarget)
-          this.state.parentFolderDropTarget.style.backgroundColor = '#f004'
+          if(this.state.loggedinUserLocation != '/'){
+            this.state.parentFolderDropTarget.style.backgroundColor = '#f004'
+          }
           this.state.loggedinUserFiles.map(v=>{
             v.dragHandle.style.backgroundColor = '#f004'
             v.rect = v.fileDiv.getBoundingClientRect()
@@ -352,10 +353,12 @@ export default {
               }
             }
           })
-          let pfdhRect = this.state.parentFolderDropTarget.getBoundingClientRect()
-          if(e.pageX > pfdhRect.x && e.pageX < pfdhRect.x + pfdhRect.width &&
-            e.pageY > pfdhRect.y - this.state.curFileDragging.dropzone.scrollTop && e.pageY < pfdhRect.y + pfdhRect.height - this.state.curFileDragging.dropzone.scrollTop){
-            this.state.parentFolderDropTarget.style.backgroundColor = '#0f44'
+          if(this.state.loggedinUserLocation != '/'){
+            let pfdhRect = this.state.parentFolderDropTarget.getBoundingClientRect()
+            if(e.pageX > pfdhRect.x && e.pageX < pfdhRect.x + pfdhRect.width &&
+              e.pageY > pfdhRect.y - this.state.curFileDragging.dropzone.scrollTop && e.pageY < pfdhRect.y + pfdhRect.height - this.state.curFileDragging.dropzone.scrollTop){
+              this.state.parentFolderDropTarget.style.backgroundColor = '#0f44'
+            }
           }
         }
       }
@@ -375,12 +378,13 @@ export default {
             }
           }) 
         }
-
-        let pfdhRect = this.state.parentFolderDropTarget.getBoundingClientRect()
-        if(e.pageX > pfdhRect.x && e.pageX < pfdhRect.x + pfdhRect.width &&
-          e.pageY > pfdhRect.y && e.pageY < pfdhRect.y + pfdhRect.height){
-          let cfdf = this.state.curFileDragging.file
-          this.moveToParent(cfdf)
+        if(this.state.loggedinUserLocation != '/'){
+          let pfdhRect = this.state.parentFolderDropTarget.getBoundingClientRect()
+          if(e.pageX > pfdhRect.x && e.pageX < pfdhRect.x + pfdhRect.width &&
+            e.pageY > pfdhRect.y && e.pageY < pfdhRect.y + pfdhRect.height){
+            let cfdf = this.state.curFileDragging.file
+            this.moveToParent(cfdf)
+          }
         }
 
         if(e.button == 0){
