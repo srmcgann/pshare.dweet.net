@@ -1,4 +1,4 @@
 <?
   require('../db.php');
-  echo decToAlpha(973);
+  echo decToAlpha(1295);
 ?>

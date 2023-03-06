@@ -32,6 +32,12 @@
       :title="`open ${file.name}`"
     >
     <div class="fileName" v-html="file.name" :ref="'name_'+file.hash"></div>
+    <div
+      v-if="viewableAsset"
+      @click="share()"
+      class="file"
+      :title="`share ${file.name}`"
+    ></div>
     </div>
   </div>
 </template>
@@ -61,10 +67,10 @@ export default {
         //if(data[0]) this.file.private = !(+this.file.private)
       })
     },
-    viewableAsset(){
-      return this.file.type.indexOf('image') !== -1 ||
-             this.file.type.indexOf('video') !== -1 ||
-             this.file.type.indexOf('audio') !== -1
+    share(){
+      if(this.viewableAsset()){
+        window.open(this.state.baseURL + '/t/' + this.state.decToAlpha(this.file.id), '_blank')
+      }
     },
     load(){
       if(this.viewableAsset()){
@@ -121,6 +127,11 @@ export default {
           }
         })
       }
+    },
+    viewableAsset(){
+      return this.file.type.indexOf('image') !== -1 ||
+             this.file.type.indexOf('video') !== -1 ||
+             this.file.type.indexOf('audio') !== -1
     }
   },
   mounted(){

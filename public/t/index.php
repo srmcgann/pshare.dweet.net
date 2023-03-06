@@ -1,13 +1,13 @@
 <?
   require('../db.php');
   $fileID = mysqli_real_escape_string($link, alphaToDec($_GET['resource']));
-  $file = []
+  $file = [];
   if(is_numeric($fileID)){
     $sql = 'SELECT * FROM files WHERE id = ' . $fileID;
-    $res = mysqli_query($sql);
+    $res = mysqli_query($link, $sql);
     if(mysqli_num_rows($res) == 1){
       $file = mysqli_fetch_assoc($res);
-      if(+$file['private']){
+      if($file['private']){
         echo 'resource is private! :(';
         die();
       }
@@ -16,7 +16,8 @@
     echo 'error :(';
     die();
   }
-  if(!sizeof($file)){
+  if(!isset($file['id'])){
+    echo $fileID;
     echo '404 :(';
     die();
   }
@@ -47,6 +48,6 @@
     </style>
   </head>
   <body>
-    <iframe src="<?=$viewerURL$fileID?>"></iframe>
+    <iframe src="<?="$viewerURL/{$_GET['resource']}"?>"></iframe>
   </body>
 </html>
