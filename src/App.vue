@@ -38,6 +38,7 @@ export default {
         assetsURL: 'https://assets.dweet.net/misc',
         fileViewerURL: 'https://pshare.dweet.net/viewer',
         admin: false,
+        loaded: false,
         loggedinUserAvatar: '',
         loggedinUserEmail: '',
         loggedinUserName: '',
@@ -221,9 +222,9 @@ export default {
       this.$nextTick(()=>{
         if(reset){
           this.state.loggedinUserFiles.map(v => {
-            v.fileDiv.style.position = 'initial'
-            v.fileDiv.style.left = 'initial'
-            v.fileDiv.style.top = 'initial'
+            v.fileDiv.style.position = 'unset'
+            v.fileDiv.style.left = 'unset'
+            v.fileDiv.style.top = 'unset'
           })
         }
         this.$nextTick(() => {
@@ -245,7 +246,9 @@ export default {
       let user =''
       let passhash = ''
       let id = ''
+      //let setLoc = ''
       let location = decodeURIComponent(window.location.pathname)
+      //if(location) setLoc = location
       parts.map(v=>{
         v = v.trim()
         let pair = v.split('=')
@@ -253,6 +256,9 @@ export default {
           case 'loggedinUser':
             user = pair[1]
           break
+          //case 'loggedinUserLocation':
+            //setLoc = pair[1]
+         // break
           case 'loggedinUserID':
             id = pair[1]
           break
@@ -269,6 +275,7 @@ export default {
         }
         fetch(this.state.baseURL + '/cookieLogin.php',  this.state.fetchObj(sendData))
         .then(json=>json.json()).then(data=>{
+          this.$nextTick(()=>this.state.loaded=true)
           if(data[0]){
             console.log('cookieLogin.php[App.vue]',data)
             this.state.loggedin = true
@@ -291,6 +298,8 @@ export default {
             this.clearCookie()
           }
         })
+      }else{
+        this.state.loaded = true
       }
     },
     moveToParent(src){
@@ -389,8 +398,10 @@ export default {
 
         if(e.button == 0){
           this.state.button = false
-          this.state.curFileDragging.file = null
-          this.state.curFileDragging = null
+          if(this.state.curFileDragging != null){
+            this.state.curFileDragging.file = null
+            this.state.curFileDragging = null
+          }
         }
       }
     }

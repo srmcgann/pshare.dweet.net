@@ -19,26 +19,22 @@
       <button @click="deleteFile()" :title="'delete'" class="fileButton deleteButton"></button>
     </div>
     <div
-      @click="copyLink()"
-      class="file"
-      :ref="file.id"
-      :title="`copy link to -> ${file.name}`"
-    >
-    </div>
-    <div
       @click="load()"
       class="file"
       :ref="file.id"
-      :title="`open ${file.name}`"
+      :title="`view ${file.name}`"
     >
-    <div class="fileName" v-html="file.name" :ref="'name_'+file.hash"></div>
-    <div
-      v-if="viewableAsset"
-      @click="share()"
-      class="file"
-      :title="`share ${file.name}`"
-    ></div>
+      <div class="fileName" v-html="file.name" :ref="'name_'+file.hash"></div>
     </div>
+    <a
+      v-if="viewableAsset() && !file.private"
+      class="fileName shareLink"
+      :title="'share link (for: '+file.name+')\nright+click to copy'"
+      v-html="'share'"
+      :ref="'share_'+file.hash"
+      :href="state.baseURL + '/t/' + state.decToAlpha(file.id)"
+      target="_blank"
+    ></a>
   </div>
 </template>
 
@@ -162,18 +158,35 @@ export default {
       thumbEl.style.position = 'center center'
       thumbEl.style.backgroundImage = `url(${this.state.assetsURL + '/' + this.file.hash})`
     }
-    let fileElement = this.$refs['name_'+this.file.hash]
-    //fileElement.style.left = this.file.X + 'px'
-    //fileElement.style.top = this.file.Y + 'px'
-    fileElement.onmouseover = () => {
-      fileElement.style.background = '#0f0'
-      fileElement.style.color = '#000';
-      fileElement.style.cursor = 'pointer'
+    if(typeof this.$refs['name_' + this.file.hash] != 'undefined'){
+      let fileElement = this.$refs['name_'+this.file.hash]
+      //fileElement.style.left = this.file.X + 'px'
+      //fileElement.style.top = this.file.Y + 'px'
+      fileElement.onmouseover = () => {
+        fileElement.style.background = '#0f0'
+        fileElement.style.color = '#000';
+        fileElement.style.cursor = 'pointer'
+      }
+      fileElement.onmouseleave = () => {
+        fileElement.style.background = '#033'
+        fileElement.style.color = '#fff'
+        fileElement.style.cursor = 'default'
+      }
     }
-    fileElement.onmouseleave = () => {
-      fileElement.style.background = '#033'
-      fileElement.style.color = '#fff'
-      fileElement.style.cursor = 'default'
+    if(typeof this.$refs['share_' + this.file.hash] != 'undefined'){
+      let fileElement2 = this.$refs['share_'+this.file.hash]
+      //fileElement.style.left = this.file.X + 'px'
+      //fileElement.style.top = this.file.Y + 'px'
+      fileElement2.onmouseover = () => {
+        fileElement2.style.background = '#0f0'
+        fileElement2.style.color = '#000';
+        fileElement2.style.cursor = 'pointer'
+      }
+      fileElement2.onmouseleave = () => {
+        fileElement2.style.background = '#033'
+        fileElement2.style.color = '#fff'
+        fileElement2.style.cursor = 'default'
+      }
     }
   }
 }
@@ -205,12 +218,12 @@ export default {
     width: 125px;
     height: 100px;
     margin-top: -20px;
-    background: #f004;
+    background: #f000;
     position: absolute;
     z-index: 10;
   }
   .dragHandle:hover{
-    background: #0f04;
+    background: #0f00;
   }
   .privateCheckbox{
   }
@@ -230,6 +243,7 @@ export default {
     background: #033;
     padding: 5px;
     margin: 5px;
+    margin-top: 10px;
     position: relative;
     z-index: 100;
     border-radius: 2px;
@@ -240,6 +254,17 @@ export default {
     padding-left: 10px;
     padding-right: 10px;
     line-height: 1;
+  }
+  .shareLink{
+    padding: 5px;
+    display: inline-block;
+    margin: 0px;
+    margin-bottom: 5px;
+    min-width: 95px;
+    vertical-align: top;
+    font-size: 10px;
+    color: #fff;
+    text-decoration: none;
   }
   .thumb{
     width: 100%;
@@ -260,7 +285,7 @@ export default {
   }
   .file{
     padding: 0px;
-    padding-top: 0px;
+    padding-top: 6px;
     display: inline-block;
     margin: 5px;
     min-width:70px;

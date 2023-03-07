@@ -17,7 +17,6 @@
     die();
   }
   if(!isset($file['id'])){
-    echo $fileID;
     echo '404 :(';
     die();
   }

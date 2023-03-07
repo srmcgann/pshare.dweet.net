@@ -34,6 +34,7 @@ export default {
 
 <style scoped>
   .viewerFrame{
+    pointer-events: none;
     width: 100%;
     position: fixed;
     top: 0;

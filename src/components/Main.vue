@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main" v-if="state.loaded">
     pshare<br><br>
     a distributed, browser based operating system<br><br>
     registration is free and anonymous<br><br><br>
