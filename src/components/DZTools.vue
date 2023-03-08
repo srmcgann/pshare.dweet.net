@@ -14,12 +14,22 @@
       </div>
     </div>
     <div class="descText">Drag one or more files to this <i>drop zone</i>.<br>
-      <span style="float: left;">tools:</span><br>
+      <span style="float: left;">directory tools:</span><br>
       <button
       title="create new folder"
       @click="createFolder()"
       class="DZToolsButton folderButton"
       >create<br>folder</button>
+      <button
+      title="make everything in this directory PUBLIC"
+      @click="toggleAll('public')"
+      class="DZToolsButton pubAll"
+      >set ALL to<br>PUBLIC</button>
+      <button
+      title="make everything in this directory PRIVATE"
+      @click="toggleAll('private')"
+      class="DZToolsButton privAll"
+      >set ALL to<br>PRIVATE</button>
     </div>
   </div>
 </template>
@@ -39,6 +49,37 @@ export default {
       let l = window.location.href.split('/')
       l.pop();l.pop()
       l=l.join('/');window.location.href=l+'/'
+    },
+    toggleAll(mode){
+      let list = []
+      this.state.loggedinUserFiles.map(v=>{
+        list=[...list, +v.id]
+      })
+      let sendData = {
+        user: this.state.loggedinUserName,
+        passhash: this.state.loggedinUserHash,
+        mode,
+        list: JSON.stringify(list)
+      }
+      console.log(sendData)
+      fetch(this.state.baseURL + '/bulkToggle.php', this.state.fetchObj(sendData))
+      .then(json=>json.json()).then(data=>{
+        console.log(data)
+        if(data[0]){
+          this.state.loggedinUserFiles.map(v=>{
+            switch(mode){
+              case 'public':
+              v.private = false
+              break
+              case 'private':
+              v.private = true
+              break
+            }
+          })
+        }else{
+          console.log('error toggling!', data)
+        }
+      })      
     },
     createFolder(){
       let folderName = prompt('enter the name of the folder:', 'new folder name');
@@ -97,6 +138,12 @@ export default {
   .folderButton{
     background-image: url(https://jsbot.cantelope.org/uploads/2jP7OJ.png);
   }
+  .privAll{
+    background-image: url(https://jsbot.cantelope.org/uploads/pN2YW.png);
+  }
+  .pubAll{
+    background-image: url(https://jsbot.cantelope.org/uploads/MVCJA.png);
+  }
   .caption{
     top: 5px;
     font-size: 1.3em;
@@ -109,16 +156,17 @@ export default {
   }
   .DZToolsButton{
     background-color: #4fc6;
-    background-position: center center;
+    background-position: center 0;
     background-repeat: no-repeat;
     background-size: 30px;
     border-radius: 10px;
-    padding: 0px;
+    padding: 4px;
     color: #fff;
     border: 1px solid #4f88;
     text-shadow: 2px 2px 2px #000;
     margin: 5px;
-    height: 35px;
+    height: 60px;
+    padding-top: 25px;
     cursor: pointer;
     min-width: 50px;
     display: inline-block;

@@ -153,9 +153,9 @@ export default {
       this.state.cursorY = rect.y - e.pageY
     }
     if(this.file.type.indexOf('image')!==-1){
-      thumbEl.style.backgroundSize = 'cover'
-      thumbEl.style.repeat = 'no-repeat'
-      thumbEl.style.position = 'center center'
+      thumbEl.style.backgroundRepeat = 'no-repeat'
+      thumbEl.style.backgroundPosition = 'center center'
+      thumbEl.style.backgroundSize = 'contain'
       thumbEl.style.backgroundImage = `url(${this.state.assetsURL + '/' + this.file.hash})`
     }
     if(typeof this.$refs['name_' + this.file.hash] != 'undefined'){

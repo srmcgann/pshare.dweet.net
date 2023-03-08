@@ -13,24 +13,25 @@
     @mouseup="mouseupHandler"
   >
     <DZTools :state="state" :caption="caption"/>
-    <div v-if="!showProgress && !finished">
+    <div v-if="!showProgress && !finished" class='fileContainerMain'>
       <div v-for="(file, idx) in state.loggedinUserFiles" :key="idx" class="fileContainer">
         <File :state="state" :file="file" :dropzone="dropzone"/>
       </div>
     </div>
     <div v-else>
-      <div v-if="finished">
+      <div v-if="finished" class="fileContainerMain">
         <div class="fileContainer" :key="idx" v-for="file in state.loggedinUserFiles" >
           <File :state="state" :file="file" />
         </div>
       </div>
       <div v-else>
         uploading...
-        <div v-if="1" v-for="(file, idx) in fileList" :key="idx">
+        <div v-if="1" v-for="(file, idx) in fileList" :key="idx" class="fileContainerMain">
           <span class="fileName" v-html="fileNameFormatted(file.name)"></span>
           <div class="progressBar" :key="'outer_'+idx">
             <div :style="`width:calc(${file.perc}%)`" class="innerProgress" :key="'inner_'+idx"></div>
           </div>
+          <div style="clear: both;"></div>
         </div>
       </div>
     </div>
@@ -247,6 +248,9 @@ export default {
     }
   },
   mounted(){
+    setTimeout(()=>{
+      this.$refs['drop_zone'].style.backgroundImage = 'none'
+    }, 500)
     window.onmousemove=()=>{
       this.draggingOver = false
     }
@@ -260,7 +264,11 @@ export default {
     padding: 20px;
     padding-top: 5px;
     color: #fff;
-    background: #333;
+    background-color: #102;
+    background-image: url(https://jsbot.cantelope.org/uploads/ZdQkX.gif);
+    background-position: center center;
+    background-size: 200px 200px;
+    background-repeat: no-repeat;
     display: inline-block;
     margin: 0;
     width: calc(100vw - 40px);
@@ -272,6 +280,9 @@ export default {
     overflow-x: hidden;
     overflow-y: auto;
     text-align: center;
+  }
+  .fileContainerMain{
+    margin-bottom: 200px;
   }
   .fileContainer{
     top: 100px;

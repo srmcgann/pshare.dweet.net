@@ -458,6 +458,7 @@ html, body{
   max-width: 125px;
   min-height: 80px;
   margin: 10px;
+  background-size: cover;
   align-self: flex-start;
   border-radius: 5px;
 }
