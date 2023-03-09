@@ -27,12 +27,12 @@
       <div class="fileName" v-html="file.name" :ref="'name_'+file.hash"></div>
     </div>
     <a
-      v-if="viewableAsset() && !file.private"
+      v-if="(file.type == 'folder' || viewableAsset()) && !file.private"
       class="fileName shareLink"
       :title="'share link (for: '+file.name+')\nright+click to copy'"
       v-html="'share'"
       :ref="'share_'+file.hash"
-      :href="state.baseURL + '/t/' + state.decToAlpha(file.id)"
+      :href="state.shareURL + '/' + state.decToAlpha(file.id)"
       target="_blank"
     ></a>
   </div>
@@ -65,7 +65,7 @@ export default {
     },
     share(){
       if(this.viewableAsset()){
-        window.open(this.state.baseURL + '/t/' + this.state.decToAlpha(this.file.id), '_blank')
+        window.open(this.state.shareURL + '/' + this.state.decToAlpha(this.file.id), '_blank')
       }
     },
     load(){

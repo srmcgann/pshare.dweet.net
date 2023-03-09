@@ -37,6 +37,7 @@ export default {
         loggedin: false,
         assetsURL: 'https://assets.dweet.net/misc',
         fileViewerURL: 'https://pshare.dweet.net/viewer',
+        shareURL: 'https://viewer.dweet.net',
         admin: false,
         loaded: false,
         loggedinUserAvatar: '',
