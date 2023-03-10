@@ -24,7 +24,7 @@
       :ref="file.id"
       :title="`view ${file.name}`"
     >
-      <div class="fileName" v-html="file.name" :ref="'name_'+file.hash"></div>
+      <div class="fileName" v-html="fileName" :ref="'name_'+file.hash"></div>
     </div>
     <a
       v-if="(file.type == 'folder' || viewableAsset()) && !file.private"
@@ -45,6 +45,20 @@ export default {
   props: ['state', 'file', 'dropzone'],
   data(){
     return {
+    }
+  },
+  computed:{
+    fileName(){
+      let name = this.file.name
+      if(this.file.type === 'generative'){
+        if(name.indexOf(".") != -1){
+          name = name.split(".")
+          name.pop()
+          name = name.join(".")
+        }
+        name += '<br>(generative)'
+      }
+      return name
     }
   },
   methods:{
