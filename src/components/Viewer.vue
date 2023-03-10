@@ -26,6 +26,9 @@ export default {
     }
   },
   mounted(){
+    if(this.src.indexOf('/viewer/scratch') === 0){
+      console.log(this.src)
+    }
     this.$refs.viewerClose.focus()
   }
 }

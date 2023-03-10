@@ -70,7 +70,11 @@ export default {
     },
     load(){
       if(this.viewableAsset()){
-        this.state.view(this.state.fileViewerURL + '/?url=' + this.file.hash)
+        if(this.file.type == 'generative'){
+          this.state.view(this.state.fileViewerURL + '/generative.php?url=' + this.file.hash)
+        } else {
+          this.state.view(this.state.fileViewerURL + '/?url=' + this.file.hash)
+        }
       } else {
         if(this.file.type == 'folder'){
           window.location.href+=this.file.name+'/'
@@ -127,7 +131,8 @@ export default {
     viewableAsset(){
       return this.file.type.indexOf('image') !== -1 ||
              this.file.type.indexOf('video') !== -1 ||
-             this.file.type.indexOf('audio') !== -1
+             this.file.type.indexOf('audio') !== -1 ||
+             this.file.type.indexOf('generative') !== -1
     }
   },
   mounted(){
@@ -151,6 +156,12 @@ export default {
       this.state.curFileDragging.dropzone = this.dropzone
       this.state.cursorX = rect.x - e.pageX 
       this.state.cursorY = rect.y - e.pageY
+    }
+    if(this.file.type.indexOf('generative') !== -1){
+      thumbEl.style.backgroundRepeat = 'no-repeat'
+      thumbEl.style.backgroundPosition = 'center center'
+      thumbEl.style.backgroundSize = 'contain'
+      thumbEl.style.backgroundImage = 'url(https://jsbot.cantelope.org/uploads/1ALBH1.png)'
     }
     if(this.file.type.indexOf('image')!==-1){
       thumbEl.style.backgroundRepeat = 'no-repeat'

@@ -19,7 +19,14 @@ putenv('TMPDIR=/tmp');
 $tmpFilePath = $_FILES['file']['tmp_name'];
 $success = false;
 if ($tmpFilePath != ""){
-  $type = mime_content_type($tmpFilePath);
+  switch($_POST['mode']){
+    case 'generative':
+     $type = 'generative';
+    break;
+    default:
+      $type = mime_content_type($tmpFilePath);
+    break;
+  }
   $filename = strtoupper($_FILES['file']['name']);
   $suffix = '.' . substr($filename, strlen($filename)-3);
   if(1){//$suffix == '.MP3' || $suffix == '.WAV' || $suffix == '.OGG'){

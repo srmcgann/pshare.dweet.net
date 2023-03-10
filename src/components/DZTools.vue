@@ -40,6 +40,11 @@
       @click="toggleAll('private')"
       class="DZToolsButton privAll"
       >set ALL to<br>PRIVATE</button>
+      <button
+      title="upload archive[zip] file(s) containing generative works.\nsee docs for guidelines"
+      @click="uploadGenerative()"
+      class="DZToolsButton uploadGenerativeButton"
+      >generative<br>zip file</button>
     </div>
   </div>
 </template>
@@ -58,7 +63,11 @@ export default {
     goUp(){
       this.state.goUp()
     },
-    selectFiles(){
+    uploadGenerative(){
+      this.selectFiles('generative')
+    },
+    selectFiles(mode = ''){
+      
       let files = document.createElement('input')
       files.type = 'file'
       files.multiple = true
@@ -87,6 +96,7 @@ export default {
             data.append('userID', this.state.loggedinUserID)
             data.append('location', this.state.loggedinUserLocation)
             data.append('description', '')
+            data.append('mode', mode)
             data.append('file', v)
             let request = new XMLHttpRequest()
             request.open('POST', this.state.baseURL + '/upload.php')
@@ -217,6 +227,9 @@ export default {
   .folderAndGoButton{
     background-image: url(https://jsbot.cantelope.org/uploads/1UNwX4.png);
   }
+  .uploadGenerativeButton{
+    background-image: url(https://jsbot.cantelope.org/uploads/1ALBH1.png);
+  }
   .privAll{
     background-image: url(https://jsbot.cantelope.org/uploads/pN2YW.png);
   }
@@ -240,7 +253,7 @@ export default {
     background-color: #4fc6;
     background-position: center 0;
     background-repeat: no-repeat;
-    background-size: 50px;
+    background-size: 40px;
     border-radius: 10px;
     padding: 4px;
     color: #fff;
