@@ -42,14 +42,17 @@ export default {
         loaded: false,
         loggedinUserAvatar: '',
         loggedinUserEmail: '',
+        globalKeys: Array(256).fill(false),
         loggedinUserName: '',
         loggedinUserHash: '',
         parentFolderDropTarget: null,
         cursorX: null,
+        goUp: null,
         cursorY: null,
         loadLoggedInUserData: null,
         loggedinUserBasicIcons: '',
         loggedinUserSnapToGrid: '',
+        dropHandler: null,
         positionFilesAbsolutely: null,
         loggedinUserID: '',
         curFileDragging: null,
@@ -303,6 +306,18 @@ export default {
         this.state.loaded = true
       }
     },
+    checkKeys(e){
+      this.state.globalKeys.map((v,i)=>{
+        switch(i){
+          case 8:
+          if(v){
+            this.goUp()
+            v = false
+          }
+          break
+        }
+      })
+    },
     moveToParent(src){
       let sendData = {
         user: this.state.loggedinUserName,
@@ -320,6 +335,12 @@ export default {
           this.positionFilesAbsolutely(true)
         }
       })
+    },
+    goUp(){
+      if(window.location.pathname.split('/').length <= 3) return
+      let l = window.location.href.split('/')
+      l.pop();l.pop()
+      l=l.join('/');window.location.href=l+'/'
     },
     moveFile(src, dest){
       let sendData = {
@@ -341,6 +362,13 @@ export default {
       })
     },
     setupListeners(){
+      document.body.onkeydown = e =>{
+        this.state.globalKeys[e.keyCode] = true
+        this.checkKeys(e)
+      }
+      document.body.onkeyup = e =>{
+        this.state.globalKeys[e.keyCode] = false
+      }
       document.body.onmousemove = e => {
         e.preventDefault()
         e.stopPropagation()
@@ -410,6 +438,7 @@ export default {
   mounted(){
     this.state.view = this.view
     this.state.login = this.login
+    this.state.goUp = this.goUp
     this.state.logout = this.logout
     this.state.register = this.register
     this.state.settings = this.settings

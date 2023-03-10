@@ -16,10 +16,20 @@
     <div class="descText">Drag one or more files to this <i>drop zone</i>.<br>
       <span style="float: left;">directory tools:</span><br>
       <button
+      title="select files from your device to upload to this directory..."
+      @click="selectFiles()"
+      class="DZToolsButton uploadButton"
+      >choose file(s)<br>to UPLOAD</button>
+      <button
       title="create new folder"
       @click="createFolder()"
       class="DZToolsButton folderButton"
       >create<br>folder</button>
+      <button
+      title="create new folder and enter it"
+      @click="createFolderAndGo()"
+      class="DZToolsButton folderAndGoButton"
+      >create and<br>enter folder</button>
       <button
       title="make everything in this directory PUBLIC"
       @click="toggleAll('public')"
@@ -46,9 +56,73 @@ export default {
   },
   methods:{
     goUp(){
-      let l = window.location.href.split('/')
-      l.pop();l.pop()
-      l=l.join('/');window.location.href=l+'/'
+      this.state.goUp()
+    },
+    selectFiles(){
+      let files = document.createElement('input')
+      files.type = 'file'
+      files.multiple = true
+      files.name = 'fileInput'
+      files.onchange = e => {
+        let fileList = []
+        Array.from(files.files).forEach((v,i) => {
+          v.completed = false
+          v.perc = 0
+          v.idx = i
+          fileList = [...fileList, v]
+        })
+        let error = false
+        fileList.map((v, i)=>{
+          if(error) return
+          if(
+            //(v.type == 'audio/mpeg' ||
+            //v.type == 'audio/ogg' ||
+            //v.type == 'audio/wav') &&
+            v.size < 100000000
+          ){
+            let data = new FormData()
+            data.append('user', this.state.loggedinUserName)
+            data.append('passhash', this.state.loggedinUserHash)
+            data.append('name', v.name)
+            data.append('userID', this.state.loggedinUserID)
+            data.append('location', this.state.loggedinUserLocation)
+            data.append('description', '')
+            data.append('file', v)
+            let request = new XMLHttpRequest()
+            request.open('POST', this.state.baseURL + '/upload.php')
+            let tidx = i
+            request.upload.addEventListener('progress', e => {
+              let perc = (e.loaded / e.total)*100
+              fileList[tidx].perc = perc
+            })
+            request.onreadystatechange = e => {
+              if(e.status ==200 && e.readyState == 4){
+              }
+            }
+            request.addEventListener('load', e=>{
+              v.completed = true
+              let finished = true
+              fileList.map(q=>{
+                if(!q.completed) finished = false
+              })
+              if(finished) {
+                this.state.loadLoggedInUserData()
+                this.finished = true
+                this.draggingOver = false
+                this.showProgress = false
+              }
+            })
+            request.send(data)
+          } else {
+            this.showProgress = false
+            this.finished = false
+            error = true
+            alert('a file was rejected due to incorrect type or filesize (max filesize = 100MB)')
+          }
+        })
+
+      }
+      files.click()
     },
     toggleAll(mode){
       let list = []
@@ -81,6 +155,9 @@ export default {
         }
       })      
     },
+    createFolderAndGo(){
+      window.location.href += '/' + this.createFolder()
+    },
     createFolder(){
       let folderName = prompt('enter the name of the folder:', 'new folder name');
       if(!folderName) return
@@ -99,6 +176,7 @@ export default {
           console.log('error creating folder!')
         }
       })
+      return folderName
     }
   },
   mounted(){
@@ -123,8 +201,6 @@ export default {
     width: 100vw;
   }
   .parentFolder{
-   }
-  .parentFolder{
     width: 60px;
     height: 60px;
     cursor: pointer;
@@ -138,11 +214,17 @@ export default {
   .folderButton{
     background-image: url(https://jsbot.cantelope.org/uploads/2jP7OJ.png);
   }
+  .folderAndGoButton{
+    background-image: url(https://jsbot.cantelope.org/uploads/1UNwX4.png);
+  }
   .privAll{
     background-image: url(https://jsbot.cantelope.org/uploads/pN2YW.png);
   }
   .pubAll{
     background-image: url(https://jsbot.cantelope.org/uploads/MVCJA.png);
+  }
+  .uploadButton{
+    background-image: url(https://jsbot.cantelope.org/uploads/1nbpSH.png);
   }
   .caption{
     top: 5px;
@@ -158,7 +240,7 @@ export default {
     background-color: #4fc6;
     background-position: center 0;
     background-repeat: no-repeat;
-    background-size: 30px;
+    background-size: 50px;
     border-radius: 10px;
     padding: 4px;
     color: #fff;

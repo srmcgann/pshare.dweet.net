@@ -28,6 +28,7 @@
         $row2 = mysqli_fetch_assoc($res2);
         $tgtID = $row2['id'];
         $newPath = str_replace($row['location'].$row['name'], $newLocation, $row2['location']);
+        $newPath = str_replace('//', '/', $newPath);
         $sql = 'UPDATE files SET location = "'.$newPath.'" WHERE id = ' . $tgtID;
         mysqli_query($link, $sql);
       }
@@ -39,6 +40,7 @@
     if(mysqli_num_rows($res)){
       $row = mysqli_fetch_assoc($res);
       $newLocation = $row['location'] . $row['name'] . '/';
+      $newLocation = str_replace('//', '/', $newLocation);
       if($row['type'] == 'folder'){
         $sql = 'UPDATE files SET location = "' . $newLocation . '" WHERE id = ' . $src;
         mysqli_query($link, $sql);

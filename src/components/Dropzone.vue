@@ -98,6 +98,7 @@ export default {
       this.count = 0
       let files
       if (e.dataTransfer.items) {
+        console.log('handling files...', e.dataTransfer.items)
         this.fileList = [];
         this.count=[...e.dataTransfer.items].length;
         [...e.dataTransfer.items].forEach((item, i) => {
@@ -254,6 +255,7 @@ export default {
     window.onmousemove=()=>{
       this.draggingOver = false
     }
+    this.$nextTick(()=> this.state.dropHandler = this.dropHandler)
   }
 }
 

@@ -28,12 +28,14 @@
         $row2 = mysqli_fetch_assoc($res2);
         $tgtID = $row2['id'];
         $newPath = str_replace($row['location'].$row['name'], $newLocation, $row2['location']);
+        $newPath = str_replace('//', '/', $newPath);
         $sql = 'UPDATE files SET location = "'.$newPath.'" WHERE id = ' . $tgtID;
         mysqli_query($link, $sql);
       }
     }
 
     $newLocation = $dest . '/';
+    $newLocation = str_replace('//', '/', $newLocation);
     $sql = 'UPDATE files SET location = "' . $newLocation . '" WHERE id = ' . $src;
     mysqli_query($link, $sql);
     $success = true;
