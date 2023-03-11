@@ -8,7 +8,7 @@
   //$passhash = '$2y$10$Rmne0vHey.ywn7QU/WqUGun9SXUZR6RHjssez4.dvJdAF2ZsB6SA2';
 
   if($user && $passhash){
-    $sql = "SELECT * FROM users WHERE (LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE('$user', ' ', '')) OR LOWER(REPLACE(email, ' ', '')) = LOWER(REPLACE('$user', ' ', ''))) AND passhash = \"$passhash\"";
+    $sql = "SELECT * FROM users WHERE (LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE('$user', ' ', '')) OR LOWER(REPLACE(email, ' ', '')) = LOWER(REPLACE('$user', ' ', ''))) AND BINARY passhash = \"$passhash\"";
     $res = mysqli_query($link, $sql);
     if(!mysqli_num_rows($res)) die();
   } else {
@@ -30,7 +30,7 @@ if ($tmpFilePath != ""){
   $filename = strtoupper($_FILES['file']['name']);
   $suffix = '.' . substr($filename, strlen($filename)-3);
   if(1){//$suffix == '.MP3' || $suffix == '.WAV' || $suffix == '.OGG'){
-    $newFileName = ($hash = md5($_FILES['file']['name'] . hash_file('md5', $tmpFilePath)));// . $suffix;
+    $newFileName = ($hash = hash_file('md5', $tmpFilePath));// . $suffix;
     $newFilePath = "$assetsDir/$newFileName";
     $location = mysqli_real_escape_string($link, $_POST['location']);
     $userID = mysqli_real_escape_string($link, $_POST['userID']);

@@ -6,7 +6,7 @@
   $error = "no (or unknown) error";
   $location = mysqli_real_escape_string($link, $data->{"location"});
   if($user && $passhash){
-  $sql = "SELECT * FROM users WHERE (LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE('$user', ' ', '')) OR LOWER(REPLACE(email, ' ', '')) = LOWER(REPLACE('$user', ' ', ''))) AND passhash = \"$passhash\"";
+  $sql = "SELECT * FROM users WHERE (LOWER(REPLACE(name, ' ', '')) = LOWER(REPLACE('$user', ' ', '')) OR LOWER(REPLACE(email, ' ', '')) = LOWER(REPLACE('$user', ' ', ''))) AND BINARY passhash = \"$passhash\"";
    $res = mysqli_query($link, $sql);
    $success=false;
    if(mysqli_num_rows($res)){

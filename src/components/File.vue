@@ -56,7 +56,7 @@ export default {
           name.pop()
           name = name.join(".")
         }
-        name += '<br>(generative)'
+        name = name.replace('_', ' ') + '<br>(generative)'
       }
       return name
     }
@@ -161,7 +161,7 @@ export default {
     dragHandle.onmousedown = e => {
       if(e.button !== 0) return
       e.preventDefault()
-      e.stopPropagation()
+      //e.stopPropagation()
       this.state.button = true
       let rect = thumbEl.getBoundingClientRect()
       thumbEl.style.position = "absolute"
