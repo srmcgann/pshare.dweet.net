@@ -51,7 +51,12 @@ if ($tmpFilePath != ""){
       $name = mysqli_real_escape_string($link, $_POST['name']);
       $description = mysqli_real_escape_string($link, $_POST['description']);
       if(!$location) $location = '/';
-      $sql = 'INSERT INTO files (name, type, userID, description, views, private, folder, hash, location) VALUES("'.$name.'", "'.$type.'", '.$userID.',"'.$description.'", 0, 1, 0, "'.$hash.'", "'.$location.'")';
+      do{
+        $insertID = 600000 + rand();
+        $sql = 'SELECT id FROM files WHERE id = ' . $insertID;
+        $res = mysqli_query($link, $sql);
+      }while(mysqli_num_rows($res));
+      $sql = 'INSERT INTO files (id, name, type, userID, description, views, private, folder, hash, location) VALUES('.$insertID.', "'.$name.'", "'.$type.'", '.$userID.',"'.$description.'", 0, 1, 0, "'.$hash.'", "'.$location.'")';
       mysqli_query($link, $sql);
       $success = true;
     }

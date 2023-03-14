@@ -224,14 +224,15 @@ export default {
     },
     positionFilesAbsolutely(reset){
       this.$nextTick(()=>{
-        if(reset){
+        if(1|| reset){
           this.state.loggedinUserFiles.map(v => {
             v.fileDiv.style.position = 'unset'
-            v.fileDiv.style.left = 'unset'
+            v.fileDiv.style.left = 'uset'
             v.fileDiv.style.top = 'unset'
           })
         }
         this.$nextTick(() => {
+          //document.querySelectorAll('.fileContainerMain')[0].style.height = '200%'
           this.state.loggedinUserFiles.map(v => {
             v.rect = v.fileDiv.getBoundingClientRect()
             v.dragHandleRect = v.dragHandle.getBoundingClientRect()

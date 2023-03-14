@@ -121,7 +121,7 @@ export default {
             //(v.type == 'audio/mpeg' ||
             //v.type == 'audio/ogg' ||
             //v.type == 'audio/wav') &&
-            v.size < 100000000
+            v.size < 10000000000
           ){
             let data = new FormData()
             data.append('user', this.state.loggedinUserName)
@@ -284,7 +284,6 @@ export default {
     text-align: center;
   }
   .fileContainerMain{
-    margin-bottom: 200px;
   }
   .fileContainer{
     top: 100px;

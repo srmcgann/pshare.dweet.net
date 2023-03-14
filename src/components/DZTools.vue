@@ -72,6 +72,9 @@ export default {
       files.type = 'file'
       files.multiple = true
       files.name = 'fileInput'
+      if(mode == 'generative'){
+        files.accept = 'application/zip'
+      }
       files.onchange = e => {
         let fileList = []
         Array.from(files.files).forEach((v,i) => {

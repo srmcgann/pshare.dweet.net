@@ -34,15 +34,6 @@
     }
     return $res;
   }
-  //echo alphaToDec('2w5p');
+  echo getrandmax();
 
-  $sql = 'SELECT * FROM files';
-  $res = mysqli_query($link, $sql);
-  for($i=0; $i < mysqli_num_rows($res); ++$i){
-    $row = mysqli_fetch_assoc($res);
-    $location = str_replace('//', '/', $row['location']);
-    $hash = $row['hash'];
-    $sql = 'UPDATE files SET location = "'.$location.'" WHERE hash = "'.$hash.'"';
-    mysqli_query($link, $sql);
-  }
 ?>

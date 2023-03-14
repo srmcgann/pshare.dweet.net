@@ -56,7 +56,7 @@ export default {
           name.pop()
           name = name.join(".")
         }
-        name = name.replace('_', ' ') + '<br>(generative)'
+        name = name.replaceAll('_', ' ') + '<br>(generative)'
       }
       return name
     }
