@@ -15,7 +15,7 @@
         <span class="checkmark" :class="{'warning': file.private==false}" style=";border: 1px solid #fff8"></span>
       </label>
       <button @click="renameFile()" :title="'rename'" class="fileButton renameButton"></button>
-      <button v-if="file.type != 'folder'" @click="downloadFile()" :title="'download file'" class="fileButton downloadButton"></button>
+      <a v-if="file.type != 'folder'" :href="this.state.assetsURL + '/' + this.file.hash" @click="downloadFile('', $event)" :title="'download file\n(right+click to copy link target)'" class="fileButton downloadButton"></a>
       <button @click="deleteFile()" :title="'delete'" class="fileButton deleteButton"></button>
     </div>
     <div
@@ -113,7 +113,9 @@ export default {
         }) 
       }
     },
-    downloadFile(){
+    downloadFile(dummy, e){
+      e.preventDefault()
+      e.stopPropagation()
       let a = document.createElement('a')
       a.href = '/proxy.php?url=' + this.state.assetsURL + '/' + this.file.hash
       a.download = this.file.name
@@ -259,6 +261,7 @@ export default {
   .downloadButton{
     background-color: #086;
     background-image: url(https://jsbot.cantelope.org/uploads/2c0FSr.png);
+    vertical-align: top;
   }
   .deleteButton{
     background-color: #200;
